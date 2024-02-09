@@ -7,6 +7,7 @@ library(gridExtra)
 
 # Perform data analysis on the Donation data
 joined_data <- fread("datasets/cleaned_joined_data.csv", sep = ",")
+external_events <- fread("datasets/external_events_data.csv", , sep = ",")
 
 #descriptive stats
 nrow(joined_data)
@@ -86,5 +87,8 @@ p5 <- ggplot(external_events_transpose, aes(datum, group=1)) +
 
 # count of donations after an event
 
+#different dempgraphic groups count in 2022
 
+
+#days to donate histogram
 

@@ -24,7 +24,6 @@ online_gifts$PC6 <- trimws(online_gifts$PC6)
 pledges$PC6 <- trimws(pledges$PC6)
 online_gifts <- online_gifts[online_gifts$PC6 != "", ]
 pledges <- pledges[pledges$PC6 != "", ]
-zipcodes <- zipcodes[zipcodes$PC6 != "", ]
 
 # Remove non-numeric values in Postcodes
 migration_data <- migration_data[!grepl("\\D", migration_data$Postcode), ]
