@@ -4,9 +4,9 @@ library(lubridate)
 library(data.table)
 library(ggplot2)
 library(gridExtra)
-library(XML)
 
 # Perform data analysis on the Donation data
+joined_data <- fread("datasets/cleaned_joined_data.csv", sep = ",")
 
 #descriptive stats
 nrow(joined_data)
