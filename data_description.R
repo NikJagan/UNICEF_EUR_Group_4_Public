@@ -7,88 +7,129 @@ library(gridExtra)
 
 # Perform data analysis on the Donation data
 joined_data <- fread("datasets/cleaned_joined_data.csv", sep = ",")
+not_aggregated_data <- fread("datasets/not_aggregated_data_description.csv", sep = ",")
 external_events <- fread("datasets/external_events_data.csv", , sep = ",")
+migration_data <- fread("datasets/Population_migrationbackground_postcode.csv", sep = ";")
 
 #descriptive stats
 nrow(joined_data)
 summary(joined_data)
 
 # amount of donations over time
-amount_of_donations <- joined_data %>% group_by(Year, Week) %>% 
-summarise(pledges=sum(pledge_count), online_donations=sum(donation_count)) %>% 
-mutate(key=paste(Year, Week))
+not_aggregated_data$DATE_external_event_end <- ymd(not_aggregated_data$DATE_external_event_end)
+not_aggregated_data$Month_Yr <- format(as.Date(not_aggregated_data$DATE_external_event_end), "%Y-%m")
+amount_of_donations <- not_aggregated_data %>% group_by(Month_Yr) %>% 
+summarise(pledges=sum(PLEDGE_ID), online_donations=sum(GIFT_ID))
 
-p1 <- ggplot(amount_of_donations, aes(key, group=1)) +
+p1 <- ggplot(amount_of_donations, aes(Month_Yr, group=1)) +
   geom_line(aes(y=pledges),color="#753500")+
   theme_classic() +
 labs(x="Time", y="Sum of pledges") +
-  theme(axis.text.x = element_blank()) +
-    annotate("text", x=5, y=-20, label= "2019", size=4) +
-  annotate("text", x=55, y=-20, label= "2020", size=4) +
-  annotate("text", x=105, y=-20, label= "2021", size=4) +
-  annotate("text", x=150, y=-20, label= "2022", size=4)  
-  
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
-p2 <-ggplot(amount_of_donations, aes(key, group=1)) +
+p2 <-ggplot(amount_of_donations, aes(Month_Yr, group=1)) +
   geom_line(aes(y=online_donations),color="#1cabe2")+
   theme_classic() +
-  labs(x="Time", y="Sum of online donations")+
-  theme(axis.text.x = element_blank()) +
-  annotate("text", x=5, y=-500, label= "2019", size=4) +
-  annotate("text", x=55, y=-500, label= "2020", size=4) +
-  annotate("text", x=105, y=-500, label= "2021", size=4) +
-  annotate("text", x=150, y=-500, label= "2022", size=4)  
+  labs(x="Time", y="Sum of online donations") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
-grid.arrange(p1,p2, nrow=2)
-ggsave("amount of donations per date.png")
+ g <- arrangeGrob(p1,p2, nrow=2) 
+ggsave("amount of donations per date.png", g)
 
 #amount of external events over time
-external_events_per_date <- external_events %>% group_by(datum) %>% 
+external_events$Month_Yr <- format(as.Date(external_events$datum), "%Y-%m")
+external_events <- na.omit(external_events)
+external_events_per_date <- external_events %>% group_by(Month_Yr) %>% 
 summarise(count=n()) 
 
-p3 <- ggplot(external_events_per_date, aes(datum,count,group=1)) +
-  geom_line(color="#753500")+
+p3 <- ggplot(external_events_per_date, aes(Month_Yr,count,group=1)) +
+  geom_line(color="#100f0f")+
   theme_classic() +
-labs(x="Time", y="Amountof external events") 
+labs(x="Time", y="Amountof external events") +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggsave("amount of external events over time.png")
 
 #top 10 types of external events
 external_events_per_type <- external_events %>% group_by(type) %>% 
 summarise(count=n()) %>% filter(type !="") %>%
 top_n(10) %>% arrange(-count)
 
-
 p4 <- ggplot(data=external_events_per_type, aes(x=reorder(type,count), y=count)) +
   geom_bar(stat="identity", fill="#1cabe2")+
   theme_classic() +coord_flip() +
 labs(x="Count of event", y="Event type") 
 
+ggsave("top 10 external events.png")
+
 # count of events per region indicator
-external_events_transpose<-external_events %>% group_by(datum) %>%
+external_events_transpose<-external_events %>% group_by(Month_Yr) %>%
                 summarise(Nederland_ind=sum(Nederland_ind),
                           Europe_ind=sum(Europe_ind),
-                          Oceanie_ind=sum(Oceanie_ind),
-                          Afrika_ind=sum(Afrika_ind),
-                          Amerika_ind=sum(Amerika_ind),
-                          Asie_ind=sum(Asie_ind),
+                          World_ind=sum(World_ind)
                 )
 
-p5 <- ggplot(external_events_transpose, aes(datum, group=1)) +
-  geom_line(aes(y=Nederland_ind),color="#753500")+
-  geom_line(aes(y=Europe_ind),color="#0077AA")+
-  geom_line(aes(y=Oceanie_ind),color="#1CABE2")+
-  geom_line(aes(y=Afrika_ind),color="#CAF7FF")+
-  geom_line(aes(y=Amerika_ind),color="#235952")+
-  geom_line(aes(y=Asie_ind),color="#A72D6F")+
+colors <- c("Netherlands" = "#753500", "Europe" = "#374955", "World" = "#1CABE2")
+p5 <- ggplot(external_events_transpose, aes(Month_Yr, group=1)) +
+  geom_line(aes(y=Nederland_ind,color="Netherlands"), size=1.5)+
+  geom_line(aes(y=Europe_ind,color="Europe"), size=1.5)+
+  geom_line(aes(y=World_ind,color="World"), size=1.5) +
   theme_classic() +
-  labs(x="Time", y="Amount of events in the region") 
+  labs(x="Time", y="Amount of events in the region", color = "Legend") +
+  scale_color_manual(values = colors)+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
+ggsave("external events by region.png")
 
 # count of donations after a pledge/no pledge
+carryover_effect <- joined_data %>% mutate(pledge_ind = ifelse(PLEDGE_ID>0,  "Yes", "No")) %>%
+group_by(pledge_ind) %>% summarise(donation_count=sum(GIFT_ID))
+
+p6 <- ggplot(data=carryover_effect, aes(x=pledge_ind, y=donation_count)) +
+  geom_bar(stat="identity", fill="#1CABE2")+
+  theme_classic() +
+  labs(x="Pledge was made", y="Count of online donations") +
+   theme(axis.text.y=element_blank(),
+        axis.ticks=element_blank())
+p6
+ggsave("donation count after pledge.png")
 
 # count of donations after an event
+events_effect <- joined_data %>% mutate(event_ind = ifelse((Nederland_ind==1|Europe_ind==1|World_ind==1), "Yes", "No")) %>%
+group_by(event_ind) %>% summarise(donation_count=sum(GIFT_ID))
 
-#different dempgraphic groups count in 2022
+p7 <- ggplot(data=events_effect, aes(x=event_ind, y=donation_count)) +
+  geom_bar(stat="identity", fill="#1CABE2")+
+  theme_classic() +
+  labs(x="Event happened", y="Donations made") +
+   theme(axis.text.y=element_blank(),
+        axis.ticks=element_blank())
+p7
+ggsave("donation count after event.png")
 
+#different demographic groups count in 2022
+#Remove irrelevant Rows
+migration_data$Geslacht <- NULL
+migration_data <- migration_data[Postcode != "Niet in te delen" & Postcode != "Nederland"]
+migration_data$Migratieachtergrond <- trimws(migration_data$Migratieachtergrond)
+migration_data <- migration_data[(Migratieachtergrond != "Totaal" & Migratieachtergrond != "Met migratieachtergrond" & Migratieachtergrond != "Overige westerse migratieachtergrond" & Migratieachtergrond != "Overige niet-westerse migratieachterg..." & Migratieachtergrond != "Westerse migratieachtergrond" & Migratieachtergrond != "Niet-westerse migratieachtergrond" & Migratieachtergrond != "Europese Unie (excl. Nederlandse acht..."),]
+migration_data <- migration_data %>% mutate_if(is.character, ~na_if(., ""))
+migration_data <- migration_data[complete.cases(migration_data), ] #remove missing values
 
-#days to donate histogram
+#create shorter strings
+conditions <- c("(voormalige) Nederlandse Antillen, Aruba", "Europa (excl. Nederlandse achtergrond)")
+replacement_values <- c("Aruba", "Europa (excl. NL)")
+ 
+# Use replace() to replace the names in the 'Names' column
+migration_data$Migratieachtergrond <- replace(migration_data$Migratieachtergrond, migration_data$Migratieachtergrond %in% conditions, replacement_values)
+migration_data <- migration_data %>% rename(Population="Bevolking (aantal)")
+migration_data <- migration_data[Perioden!=2018]
+migration_data_total <- migration_data %>% group_by(Migratieachtergrond, Perioden) %>% summarise(Population=sum(as.numeric(Population)))
+
+p8 <- ggplot(migration_data_total, aes(fill=Perioden, y=Population, x=Migratieachtergrond)) + 
+    geom_bar(position="stack", stat="identity") +
+    theme_classic() + labs(x="Year", y="Population") +
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), axis.text.y=element_blank(),)
+
+ggsave("population by migration background.png")
 

@@ -72,6 +72,9 @@ joined_data$Week <- isoweek(joined_data$DATE_external_event_end)
 joined_data$Year <- year(joined_data$DATE_external_event_end)
 joined_data <- joined_data[Year>2018,]
 
+write.csv(joined_data, "datasets/not_aggregated_data_description.csv", row.names=F)
+
+
 #aggregate data on the correct level
 joined_data <- joined_data %>% group_by(Postcode,Year, Week) %>%
                 summarise(pledge_count=sum(PLEDGE_ID),
