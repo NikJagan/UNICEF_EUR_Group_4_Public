@@ -8,9 +8,9 @@ import json
 import os
 import numpy as np
 from constants import *
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
-load_dotenv()
+#load_dotenv() #use it only in combination with .env file
 
 #STEP 1: Extract a list of all the articles from 
 # the rtf files
