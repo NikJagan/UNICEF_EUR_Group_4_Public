@@ -1,7 +1,7 @@
 # Repository goal
 This repository consists of files that were used by Marleen Haubitz, Anastasia Khomenko, Nikilesh Jagan, and Inno Loor for analysis of Unicef data as a part of FEM11153: Seminar Case Studies in Data Science and Marketing Analytics. Master's program DSMA.
 
-# Effect of external events and proximities on donations
+# Effect of external events and social proximities on donations
 
 ## Description
 
@@ -18,11 +18,18 @@ The data files used are the following:
 
 1. _external events.py_ ensures that the external events dataset is created. This script expects several rtf files as input. For current research, the a batch of data was downloaded from Lexis Nexis database for 2018-2022 (see unicef events data for reference).
 
-2. _constants.py_ The file consists of all constants used throughout the project.
+2. _constants.py_ The file consists of all constants used for external_events script.
 
 3. _role.py_ This script defines the system message passed to chatGPT model. It is very important to define the prompt properly as this defines the success of the model. Poorly-defines prompt will lead to bad quality data. The best practices are listed [here](https://platform.openai.com/docs/guides/prompt-engineering/strategy-write-clear-instructions).
 
 4. _ETL.R_ This script ensures that all data cleaning and joins are performed. As output, it produces 1 dataset (cleaned_joined_data.csv) that can be used for ML. In principle, any ML model can then be applied to this dataset.
+
+5. _LR.R_ This script consists of the implementation, training, and evaluating the Linear Regression model.
+
+5. _CausalTree.R_ This script consists of the implementation, training, hyperparametertuning, evaluating and post-hoc analysis of the Causal Tree model.
+
+5. _CausalForests.R_ This script consists of the implementation, training, hyperparametertuning, evaluating and post-hoc analysis of the Causal Forest model. This model is explained in detail [here](https://towardsdatascience.com/causal-machine-learning-for-econometrics-causal-forests-5ab3aec825a7).
+
 
 ## Recommendations on continuity
 
@@ -35,3 +42,22 @@ In order to continue collecting external events, one needs to access a particula
 2. **ChatGPT**
 
 Undoubtedly, ChatGPT API plays an important role in this project. Therefore, it is important to invest into a developers account and set up the correct api key in the python script. The cost highly depends on how long the input articles are and can be found on [openai website](https://openai.com/pricing). Price of extracting data on 300 articles was below 1.5 USD.
+
+3. **Data Cleaning**
+
+The following cleaning steps are performed (ETL scripts):
+
+1. Remove whitespaces, irrelevant/erroneous entries, aggregate to PC4 (instead of PC6);
+2. Merge online donations with pledges using a full join. Online donations are a match with a pledge if they occured in the same Postcode and happened within 14 days after a pledge occured;
+3. Join external events. They are added if they occured 7 days before pledge date (if present). Or, otherwise, 7 days before online donation date.
+4. Join demographics based on Postcode and year.
+5. Aggregate the data on PC4, Year, Week level. 
+
+The output dataset of data is in datasets/cleaned_joined_data.csv
+
+
+### A note on programming languages
+
+**Python** was used to make asynchronous calls to the ChatGpt API as it significantly increases the speed of the data retrieval as instead of making each call one by one, we could retreive up to 500 calls per minute. Therefore, the data extraction for external datasets was setup fully in python. 
+
+However, because **R** was part of the curriculum for our master's programm, students were mostly familiar with this language. Therefore, this language was further applied throughout the research.
