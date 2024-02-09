@@ -16,7 +16,7 @@ Our approach involves a detailed analysis of the characteristics and preferences
 
 The data files used are the following:
 
-1. _external events.py_ ensures that the external events dataset is created. This script expects several rtf files as input. For current research, the a batch of data was downloaded from Lexis Nexis database for 2018-2022 (see unicef events data for reference). _This file requires following packages to run:striprtf, nltk, pandas, asyncio, aiohttp, json, numpy, python-dotenv, statsmodels. 
+1. _external events.py_ ensures that the external events dataset is created. This script expects several rtf files as input. For current research, the a batch of data was downloaded from Lexis Nexis database for 2018-2022 (see unicef events data for reference). _This file requires following packages to run:striprtf, nltk, pandas, asyncio, aiohttp, json, numpy, python-dotenv, statsmodels_. 
 
 2. _constants.py_ The file consists of all constants used for external_events script.
 
