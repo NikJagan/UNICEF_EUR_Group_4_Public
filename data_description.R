@@ -14,6 +14,9 @@ migration_data <- fread("datasets/Population_migrationbackground_postcode.csv", 
 #descriptive stats
 nrow(joined_data)
 summary(joined_data)
+sum(joined_data$pledge_count)
+sum(joined_data$donation_count)
+names(joined_data)
 
 # amount of donations over time
 not_aggregated_data$DATE_external_event_end <- ymd(not_aggregated_data$DATE_external_event_end)
@@ -33,7 +36,7 @@ p2 <-ggplot(amount_of_donations, aes(Month_Yr, group=1)) +
   labs(x="Time", y="Sum of online donations") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
- g <- arrangeGrob(p1,p2, nrow=2) 
+ g <- arrangeGrob(p1,p2, ncol=2) 
 ggsave("amount of donations per date.png", g)
 
 #amount of external events over time
@@ -45,10 +48,8 @@ summarise(count=n())
 p3 <- ggplot(external_events_per_date, aes(Month_Yr,count,group=1)) +
   geom_line(color="#100f0f")+
   theme_classic() +
-labs(x="Time", y="Amountof external events") +
+labs(x="Time", y="Amount of external events") +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-ggsave("amount of external events over time.png")
 
 #top 10 types of external events
 external_events_per_type <- external_events %>% group_by(type) %>% 
@@ -60,7 +61,8 @@ p4 <- ggplot(data=external_events_per_type, aes(x=reorder(type,count), y=count))
   theme_classic() +coord_flip() +
 labs(x="Count of event", y="Event type") 
 
-ggsave("top 10 external events.png")
+ g <- arrangeGrob(p3,p4, ncol=2) 
+ggsave("external events description.png",g)
 
 # count of events per region indicator
 external_events_transpose<-external_events %>% group_by(Month_Yr) %>%
@@ -82,8 +84,8 @@ p5 <- ggplot(external_events_transpose, aes(Month_Yr, group=1)) +
 ggsave("external events by region.png")
 
 # count of donations after a pledge/no pledge
-carryover_effect <- joined_data %>% mutate(pledge_ind = ifelse(PLEDGE_ID>0,  "Yes", "No")) %>%
-group_by(pledge_ind) %>% summarise(donation_count=sum(GIFT_ID))
+carryover_effect <- joined_data %>% mutate(pledge_ind = ifelse(pledge_count>0,  "Yes", "No")) %>%
+group_by(pledge_ind) %>% summarise(donation_count=sum(donation_count))
 
 p6 <- ggplot(data=carryover_effect, aes(x=pledge_ind, y=donation_count)) +
   geom_bar(stat="identity", fill="#1CABE2")+
@@ -96,7 +98,7 @@ ggsave("donation count after pledge.png")
 
 # count of donations after an event
 events_effect <- joined_data %>% mutate(event_ind = ifelse((Nederland_ind==1|Europe_ind==1|World_ind==1), "Yes", "No")) %>%
-group_by(event_ind) %>% summarise(donation_count=sum(GIFT_ID))
+group_by(event_ind) %>% summarise(donation_count=sum(donation_count))
 
 p7 <- ggplot(data=events_effect, aes(x=event_ind, y=donation_count)) +
   geom_bar(stat="identity", fill="#1CABE2")+
@@ -128,8 +130,33 @@ migration_data_total <- migration_data %>% group_by(Migratieachtergrond, Periode
 
 p8 <- ggplot(migration_data_total, aes(fill=Perioden, y=Population, x=Migratieachtergrond)) + 
     geom_bar(position="stack", stat="identity") +
-    theme_classic() + labs(x="Year", y="Population") +
+    theme_classic() + labs(x="Year", y="Migration") +
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), axis.text.y=element_blank(),)
 
 ggsave("population by migration background.png")
+
+#external events proximities
+external_events_per_region <- external_events %>% mutate(proximity=case_when(
+                                                        Nederland_ind==1 ~ "Netherlands",
+                                                        Marokko_ind==1 ~ "Morocco",
+                                                        Turkije_ind==1 ~ "Turkey",
+                                                        Belgie_ind==1 ~ "Belgium",
+                                                        Duitsland_ind==1 ~ "Germany",
+                                                        Indonesie_ind==1 ~ "Indonesia",
+                                                        Polen_ind==1 ~ "Poland",
+                                                        Suriname_ind==1 ~ "Surinam",
+                                                        Oceanie_ind==1 ~ "Oceania",
+                                                        Afrika_ind==1 ~ "Africa",
+                                                        Amerika_ind==1 ~ "America",
+                                                        Asie_ind==1 ~ "Asia")) %>% 
+                                                        group_by(proximity)  %>% 
+                                                        filter(!is.na(proximity))  %>% 
+                                                        summarise(count=n()) %>% 
+                                                        arrange(-count)
+
+p4 <- ggplot(data=external_events_per_region, aes(x=reorder(proximity,count), y=count)) +
+  geom_bar(stat="identity", fill="#1cabe2")+
+  theme_classic() +coord_flip() +
+labs(x="Count of events", y="Event region") 
+ggsave("events by region.png")
 

@@ -156,4 +156,4 @@ setnames(migration, old = "PC4", new = "Postcode")
 full_data <- left_join(joined_data, migration, by = c("Year", "Postcode"))
 full_data <- na.omit(full_data)
 
-write.csv(full_data, "data/cleaned_joined_data.csv ", row.names=F)
+write.csv(full_data, "datasets/cleaned_joined_data.csv ", row.names=F)
