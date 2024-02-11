@@ -24,7 +24,6 @@ online_gifts$PC6 <- trimws(online_gifts$PC6)
 pledges$PC6 <- trimws(pledges$PC6)
 online_gifts <- online_gifts[online_gifts$PC6 != "", ]
 pledges <- pledges[pledges$PC6 != "", ]
-zipcodes <- zipcodes[zipcodes$PC6 != "", ]
 
 # Remove non-numeric values in Postcodes
 migration_data <- migration_data[!grepl("\\D", migration_data$Postcode), ]
@@ -72,6 +71,9 @@ joined_data$Week <- isoweek(joined_data$DATE_external_event_end)
 # Add a year column to each dataset and only take data from 2018 (no external events for 2018)
 joined_data$Year <- year(joined_data$DATE_external_event_end)
 joined_data <- joined_data[Year>2018,]
+
+write.csv(joined_data, "datasets/not_aggregated_data_description.csv", row.names=F)
+
 
 #aggregate data on the correct level
 joined_data <- joined_data %>% group_by(Postcode,Year, Week) %>%
@@ -154,4 +156,4 @@ setnames(migration, old = "PC4", new = "Postcode")
 full_data <- left_join(joined_data, migration, by = c("Year", "Postcode"))
 full_data <- na.omit(full_data)
 
-write.csv(full_data, "data/cleaned_joined_data.csv ", row.names=F)
+write.csv(full_data, "datasets/cleaned_joined_data.csv ", row.names=F)
