@@ -96,6 +96,8 @@ p6 <- ggplot(data=carryover_effect, aes(x=pledge_ind, y=donation_count)) +
 p6
 ggsave("donation count after pledge.png")
 
+table(prop.table(carryover_effect))
+
 # count of donations after an event
 events_effect <- joined_data %>% mutate(event_ind = ifelse((Nederland_ind==1|Europe_ind==1|World_ind==1), "Yes", "No")) %>%
 group_by(event_ind) %>% summarise(donation_count=sum(donation_count))
@@ -108,6 +110,8 @@ p7 <- ggplot(data=events_effect, aes(x=event_ind, y=donation_count)) +
         axis.ticks=element_blank())
 p7
 ggsave("donation count after event.png")
+
+table(prop.table(events_effect))
 
 #different demographic groups count in 2022
 #Remove irrelevant Rows
@@ -160,3 +164,14 @@ p4 <- ggplot(data=external_events_per_region, aes(x=reorder(proximity,count), y=
 labs(x="Count of events", y="Event region") 
 ggsave("events by region.png")
 
+#histogram of injured people
+external_events$slachtoffers <- as.integer(external_events$slachtoffers)
+external_events$slachtoffers [is.na(external_events$slachtoffers )] <- 0
+external_events_cas <- external_events %>% mutate(casualty_ind=ifelse(slachtoffers>0, 1,0)) %>% group_by(casualty_ind) %>% summarise(count=n())
+p<-ggplot(external_events, aes(x=slachtoffers)) + 
+  geom_histogram(fill="#1cabe2")+
+    theme_classic() + 
+labs(x="Causalties count", y="") 
+p
+
+table(prop.table(external_events_cas))
