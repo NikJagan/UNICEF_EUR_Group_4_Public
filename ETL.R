@@ -108,7 +108,7 @@ joined_data <- joined_data %>% group_by(Postcode,Year, Week) %>%
                           Amerika_ind=max(Amerika_ind),
                           Asie_ind=max(Asie_ind),
                 ) %>% mutate(pledge_ind=ifelse(pledge_count>0, 1,0),
-                            total_donations_count=pledge_count+donation_count)
+                            total_donations_count=pledge_count+online_donation_count)
 
 
 #MIGRATION DATA ####
@@ -187,13 +187,17 @@ write.csv(train, "datasets/full_data_train.csv ", row.names=F)
 write.csv(test, "datasets/full_data_test.csv ", row.names=F)
 
 #examining the full data
-hist(full_data$donation_count)
+hist(full_data$online_donation_count)
 hist(full_data$pledge_ind)
 hist(full_data$Nederland_ind)
 hist(full_data$World_ind)
+hist(joined_data$pledge_count)
 
 
-barplot(prop.table(table(full_data$donation_count)))
+
+barplot(prop.table(table(full_data$online_donation_count)))
+barplot(prop.table(table(joined_data$pledge_count)))
+
 nrow(full_data)
 
 names(full_data)
