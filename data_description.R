@@ -14,8 +14,8 @@ migration_data <- fread("datasets/Population_migrationbackground_postcode.csv", 
 #descriptive stats
 nrow(joined_data)
 summary(joined_data)
-sum(joined_data$pledge_count)
-sum(joined_data$donation_count)
+sum(joined_data$pledge_ind)
+sum(joined_data$online_donation_count)
 names(joined_data)
 
 # amount of donations over time
@@ -110,7 +110,7 @@ ggsave("external events by region.png")
 
 # count of donations after a pledge/no pledge
 carryover_effect <- joined_data %>% mutate(pledge_ind = ifelse(pledge_count>0,  "Yes", "No")) %>%
-group_by(pledge_ind) %>% summarise(donation_count=sum(donation_count))
+group_by(pledge_ind) %>% summarise(donation_count=sum(online_donation_count))
 
 p6 <- ggplot(data=carryover_effect, aes(x=pledge_ind, y=donation_count)) +
   geom_bar(stat="identity", fill="#1CABE2")+
@@ -121,11 +121,9 @@ p6 <- ggplot(data=carryover_effect, aes(x=pledge_ind, y=donation_count)) +
 p6
 ggsave("donation count after pledge.png")
 
-table(prop.table(carryover_effect))
-
 # count of donations after an event
 events_effect <- joined_data %>% mutate(event_ind = ifelse((Nederland_ind==1|Europe_ind==1|World_ind==1), "Yes", "No")) %>%
-group_by(event_ind) %>% summarise(donation_count=sum(donation_count))
+group_by(event_ind) %>% summarise(donation_count=sum(online_donation_count))
 
 p7 <- ggplot(data=events_effect, aes(x=event_ind, y=donation_count)) +
   geom_bar(stat="identity", fill="#1CABE2")+
