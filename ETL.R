@@ -7,6 +7,7 @@ library(data.table)
 # Read the files
 online_gifts <- fread("datasets/ONLINE GIFTS.csv", sep = ";")
 pledges <- fread("datasets/PLEDGES.csv", sep = ";")
+zipcodes <- fread("datasets/ZIPCODES.csv", sep = ";")
 external_events <- fread("datasets/external_events_data.csv", , sep = ",")
 migration_data <- fread("datasets/Population_migrationbackground_postcode.csv", sep = ";")
 
@@ -24,12 +25,18 @@ online_gifts$PC6 <- trimws(online_gifts$PC6)
 pledges$PC6 <- trimws(pledges$PC6)
 online_gifts <- online_gifts[online_gifts$PC6 != "", ]
 pledges <- pledges[pledges$PC6 != "", ]
+zipcodes <- zipcodes[zipcodes$PC6 != "", ]
 
 # Remove non-numeric values in Postcodes
 migration_data <- migration_data[!grepl("\\D", migration_data$Postcode), ]
 
+#leave zipcodes with at least 1 pledge
+more_than_1_pledge <- left_join(zipcodes,pledges, join_by(PC6==PC6)) %>% 
+                        group_by(PC6) %>%
+                        summarise(num_of_pledges = sum(!is.na(PLEDGE_ID))) %>%
+                        filter(num_of_pledges>0)
+
 #bring dates to correct format
-external_events$datum <- ymd(external_events$datum) 
 online_gifts$DATE <- dmy(format(mdy(online_gifts$DATE), "%d/%m/%Y"))
 pledges$ACQUISITIONDATE <- dmy(format(mdy(pledges$ACQUISITIONDATE), "%d.%m.%Y"))
 
@@ -39,6 +46,8 @@ pledges$ACQUISITIONDATE <- dmy(format(mdy(pledges$ACQUISITIONDATE), "%d.%m.%Y"))
 pledges$ACQUISITIONDATE_end_cooloff <- pledges$ACQUISITIONDATE+14
 
 pledges_plus_online_gifts <- full_join(pledges, online_gifts, join_by(PC6==PC6, ACQUISITIONDATE <= DATE, ACQUISITIONDATE_end_cooloff >= DATE ))
+
+pledges_plus_online_gifts <- left_join(more_than_1_pledge, pledges_plus_online_gifts, join_by(PC6==PC6))
 
 # take care of NAs
 # If gift ID or pledge id, it means this type of donation was unavailable
@@ -54,9 +63,14 @@ pledges_plus_online_gifts$DATE_external_event_end <- dplyr::coalesce(pledges_plu
                                       pledges_plus_online_gifts$ONLINE_GIFT_DATE, NA)
 pledges_plus_online_gifts$DATE_external_event_beg <- pledges_plus_online_gifts$DATE_external_event_end-7
 
+#subsample external events with injuries
+external_events_casualties <- external_events[slachtoffers>0,]
+external_events_casualties$datum <- ymd(external_events_casualties$datum) 
+
 #join the external events dataset
 ind_cols = c("Nederland_ind","Europe_ind","World_ind","Marokko_ind","Turkije_ind","Belgie_ind","Duitsland_ind","Indonesie_ind","Polen_ind", "Suriname_ind","Oceanie_ind","Afrika_ind","Amerika_ind","Asie_ind")
-joined_data <- left_join(pledges_plus_online_gifts,external_events, join_by(DATE_external_event_end>=datum, DATE_external_event_beg<=datum))
+joined_data <- left_join(pledges_plus_online_gifts,external_events_casualties, join_by(DATE_external_event_end>=datum, DATE_external_event_beg<=datum))
+joined_data <- setDT(joined_data)
 joined_data <- joined_data[ , (ind_cols) := lapply(.SD, nafill, fill=0), .SDcols = ind_cols]
 
 # Convert Pc6 to PC4
@@ -78,7 +92,7 @@ write.csv(joined_data, "datasets/not_aggregated_data_description.csv", row.names
 #aggregate data on the correct level
 joined_data <- joined_data %>% group_by(Postcode,Year, Week) %>%
                 summarise(pledge_count=sum(PLEDGE_ID),
-                          donation_count=sum(GIFT_ID),
+                          online_donation_count=sum(GIFT_ID),
                           Nederland_ind=max(Nederland_ind),
                           Europe_ind=max(Europe_ind),
                           World_ind=max(World_ind),
@@ -93,7 +107,9 @@ joined_data <- joined_data %>% group_by(Postcode,Year, Week) %>%
                           Afrika_ind=max(Afrika_ind),
                           Amerika_ind=max(Amerika_ind),
                           Asie_ind=max(Asie_ind),
-                )
+                ) %>% mutate(pledge_ind=ifelse(pledge_count>0, 1,0),
+                            total_donations_count=pledge_count+donation_count)
+
 
 #MIGRATION DATA ####
 
@@ -153,7 +169,31 @@ migration <- setnames(migration, old = "YEAR", new = "Year")
 setnames(migration, old = "PC4", new = "Postcode")
 
 #Final Data
+full_data$pledge_count <- NA
 full_data <- left_join(joined_data, migration, by = c("Year", "Postcode"))
 full_data <- na.omit(full_data)
 
 write.csv(full_data, "datasets/cleaned_joined_data.csv ", row.names=F)
+
+## create train-test split
+smp_size <- floor(0.9 * nrow(mtcars))
+set.seed(123)
+train_ind <- sample(seq_len(nrow(full_data)), size = smp_size)
+
+train <- full_data[train_ind, ]
+test <- full_data[-train_ind, ]
+
+write.csv(train, "datasets/full_data_train.csv ", row.names=F)
+write.csv(test, "datasets/full_data_test.csv ", row.names=F)
+
+#examining the full data
+hist(full_data$donation_count)
+hist(full_data$pledge_ind)
+hist(full_data$Nederland_ind)
+hist(full_data$World_ind)
+
+
+barplot(prop.table(table(full_data$donation_count)))
+nrow(full_data)
+
+names(full_data)

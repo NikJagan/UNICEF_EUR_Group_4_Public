@@ -27,16 +27,16 @@ summarise(pledges=sum(PLEDGE_ID), online_donations=sum(GIFT_ID))
 p1 <- ggplot(amount_of_donations, aes(Month_Yr, group=1)) +
   geom_line(aes(y=pledges),color="#753500")+
   theme_classic() +
-labs(x="Time", y="Sum of pledges") +
+labs(x="Time (months)", y="Sum of pledges") +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 p2 <-ggplot(amount_of_donations, aes(Month_Yr, group=1)) +
   geom_line(aes(y=online_donations),color="#1cabe2")+
   theme_classic() +
-  labs(x="Time", y="Sum of online donations") +
+  labs(x="Time (months)", y="Sum of online donations") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
- g <- arrangeGrob(p1,p2, ncol=2) 
+ g <- arrangeGrob(p1,p2, nrow=2) 
 ggsave("amount of donations per date.png", g)
 
 #amount of external events over time
@@ -48,8 +48,30 @@ summarise(count=n())
 p3 <- ggplot(external_events_per_date, aes(Month_Yr,count,group=1)) +
   geom_line(color="#100f0f")+
   theme_classic() +
-labs(x="Time", y="Amount of external events") +
+labs(x="Time (months)", y="Amount of external events") +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+#check whether these events are different
+external_events_types <- external_events %>% mutate(type_new=case_when(
+                                                        type=="bosbrand" ~ "bosbrand",
+                                                        type=="brand" ~ "bosbrand",
+                                                        type=="oorlog"  ~ "oorlog",
+                                                        type=="tyfoon" ~ "tyfoon",
+                                                        type=="orkaan" ~ "orkaan",
+                                                        type=="bosbranden" ~ "bosbrand",
+                                                        type=="overstroming" ~ "overstroming",
+                                                        type=="overstromingen" ~ "overstroming",
+                                                        type=="coronavirus"~ "coronavirus",
+                                                        type=="cycloon"~ "cycloon",
+                                                        .default="overig"
+                                                        ))%>% group_by(Month_Yr, type_new) %>% 
+summarise(count=n()) 
+p3_v2 <- ggplot(external_events_types, aes(Month_Yr,count,group=1, color=type_new)) +
+  geom_line()+
+  theme_classic() +
+labs(x="Time (months)", y="Amount of external events") +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+
 
 #top 10 types of external events
 external_events_per_type <- external_events %>% group_by(type) %>% 
@@ -63,6 +85,9 @@ labs(x="Count of event", y="Event type")
 
  g <- arrangeGrob(p3,p4, ncol=2) 
 ggsave("external events description.png",g)
+
+ g <- arrangeGrob(p1,p2,p3, nrow=3) 
+ggsave("all line plots.png", g)
 
 # count of events per region indicator
 external_events_transpose<-external_events %>% group_by(Month_Yr) %>%
@@ -129,12 +154,12 @@ replacement_values <- c("Aruba", "Europa (excl. NL)")
 # Use replace() to replace the names in the 'Names' column
 migration_data$Migratieachtergrond <- replace(migration_data$Migratieachtergrond, migration_data$Migratieachtergrond %in% conditions, replacement_values)
 migration_data <- migration_data %>% rename(Population="Bevolking (aantal)")
-migration_data <- migration_data[Perioden!=2018]
-migration_data_total <- migration_data %>% group_by(Migratieachtergrond, Perioden) %>% summarise(Population=sum(as.numeric(Population)))
+migration_data_22 <- migration_data[Perioden==2022]
+migration_data_total <- migration_data_22 %>% group_by(Migratieachtergrond, Perioden) %>% summarise(Population=sum(as.numeric(Population)))
 
-p8 <- ggplot(migration_data_total, aes(fill=Perioden, y=Population, x=Migratieachtergrond)) + 
-    geom_bar(position="stack", stat="identity") +
-    theme_classic() + labs(x="Year", y="Migration") +
+p8 <- ggplot(migration_data_total, aes(y=Population, x=reorder(Migratieachtergrond, -Population))) + 
+    geom_bar(fill="#1CABE2", stat="identity") +
+    theme_classic() + labs(x="Cultural background", y="Population") +
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), axis.text.y=element_blank(),)
 
 ggsave("population by migration background.png")
