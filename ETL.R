@@ -169,9 +169,10 @@ migration <- setnames(migration, old = "YEAR", new = "Year")
 setnames(migration, old = "PC4", new = "Postcode")
 
 #Final Data
-full_data$pledge_count <- NA
 full_data <- left_join(joined_data, migration, by = c("Year", "Postcode"))
 full_data <- na.omit(full_data)
+full_data <- subset(full_data, select = -c(pledge_count) )
+
 
 write.csv(full_data, "datasets/cleaned_joined_data.csv ", row.names=F)
 
