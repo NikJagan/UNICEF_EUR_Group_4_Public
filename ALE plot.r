@@ -40,5 +40,23 @@ ALEPlot(df_train, rf_model, pred.fun=yhat, J="World_ind",K=20, NA.plot = F)
 
 
 #create ALE 2nd order plots for proximities
+#culture
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Nederland_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Nederland_ind", "X.voormalige..Nederlandse.Antillen..Aruba"),K=20, NA.plot = F)
 
-ALEPlot(df_train, rf_model, pred.fun=yhat, J=c(25,17),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Marokko_ind", "Marokko"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Turkije_ind", "Turkije"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Belgie_ind", "België"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Duitsland_ind", "Duitsland"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Indonesie_ind", "Indonesië"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Polen_ind", "Polen"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Suriname_ind", "Suriname"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Oceanie_ind", "Oceanië"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Afrika_ind", "Afrika"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Amerika_ind", "Amerika"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Asie_ind", "Azië"),K=20, NA.plot = F)
+
+#location
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Nederland_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Europe_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("World_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
