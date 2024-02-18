@@ -29,7 +29,7 @@ NedAnt <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="X.voormalige..Nederlands
 Surinam <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="Suriname",K=20, NA.plot = F)
 turkey <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="Turkije",K=20, NA.plot = F)
 
-png("demographics.png", width = 15, height = 12, units = 'in', res = 300)
+png("demographics.png", width = 10, height = 8, units = 'in', res = 300)
 par(mfrow = c(2,5), mar=c(4, 4, 3, 1))
 plot(ned$x.values, ned$f.values, type="l", xlab="% of Dutch nationals", ylab="Effect on DV")
 plot(afrika$x.values, afrika$f.values, type="l", xlab="% of African nationals", ylab="Effect on DV")
@@ -46,10 +46,17 @@ plot(turkey$x.values, turkey$f.values, type="l", xlab="% of Turkey nationals", y
 dev.off()
 
 #external event
-ALEPlot(df_train, rf_model, pred.fun=yhat, J="Nederland_ind",K=20, NA.plot = F)
-ALEPlot(df_train, rf_model, pred.fun=yhat, J="Europe_ind",K=20, NA.plot = F)
-ALEPlot(df_train, rf_model, pred.fun=yhat, J="World_ind",K=20, NA.plot = F)
+ned_ev <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="Nederland_ind",K=20, NA.plot = F)
+eu_ev <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="Europe_ind",K=20, NA.plot = F)
+world_ev <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="World_ind",K=20, NA.plot = F)
 
+png("events.png", width = 10, height = 8, units = 'in', res = 300)
+par(mfrow = c(1,3), mar=c(4, 4, 3, 1))
+plot(ned_ev$x.values, ned_ev$f.values, type="l", xlab="A disaster happened in the Netherlands", ylab="Effect on DV")
+plot(eu_ev$x.values, eu_ev$f.values, type="l", xlab="A disaster happened in EU", ylab="Effect on DV")
+mtext("ALE main effect of external events on online donations", side=3, line=1.5)
+plot(world_ev$x.values, world_ev$f.values, type="l", xlab="A disaster happened elsewehere", ylab="Effect on DV")
+dev.off()
 
 #create ALE 2nd order plots for proximities
 #culture
