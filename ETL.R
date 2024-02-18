@@ -177,7 +177,7 @@ full_data <- subset(full_data, select = -c(pledge_count) )
 write.csv(full_data, "datasets/cleaned_joined_data.csv ", row.names=F)
 
 ## create train-test split
-smp_size <- floor(0.9 * nrow(mtcars))
+smp_size <- floor(0.9 * nrow(full_data))
 set.seed(123)
 train_ind <- sample(seq_len(nrow(full_data)), size = smp_size)
 
