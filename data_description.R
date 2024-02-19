@@ -198,3 +198,17 @@ labs(x="Causalties count", y="")
 p
 
 table(prop.table(external_events_cas))
+
+#discover which article corresponds to an observation
+#find the observation
+migration$Postcode <- as.numeric(migration$Postcode)
+not_aggregated_data <- left_join(not_aggregated_data, migration, by = c("Year", "Postcode"))
+observation <- not_aggregated_data[which(Bevolking>=1.685358826079 & Bevolking<=1.68535882608),]
+observation <- observation[which(Postcode==5658),]
+events_that_happened <- observation %>% group_by(datum, land, type) %>% summarise(count=n())
+head(events_that_happened, 16)
+
+
+#T-test to test for cannibalization of pledges
+t.test(online_donation_count~pledge_ind, full_data)
+

@@ -173,6 +173,22 @@ full_data <- left_join(joined_data, migration, by = c("Year", "Postcode"))
 full_data <- na.omit(full_data)
 full_data <- subset(full_data, select = -c(pledge_count) )
 
+#change rows to factors
+df_train$Nederland_ind <- as.factor(df_train$Nederland_ind)
+df_train$Europe_ind <- as.factor(df_train$Europe_ind)
+df_train$World_ind <- as.factor(df_train$World_ind)
+df_train$Marokko_ind <- as.factor(df_train$Marokko_ind)
+df_train$Turkije_ind <- as.factor(df_train$Turkije_ind)
+df_train$Belgie_ind <- as.factor(df_train$Belgie_ind)
+df_train$Duitsland_ind <- as.factor(df_train$Duitsland_ind)
+df_train$Indonesie_ind <- as.factor(df_train$Indonesie_ind)
+df_train$Polen_ind <- as.factor(df_train$Polen_ind)
+df_train$Suriname_ind <- as.factor(df_train$Suriname_ind)
+df_train$Oceanie_ind <- as.factor(df_train$Oceanie_ind)
+df_train$Afrika_ind <- as.factor(df_train$Afrika_ind)
+df_train$Amerika_ind <- as.factor(df_train$Amerika_ind)
+df_train$Asie_ind <- as.factor(df_train$Asie_ind)
+df_train$pledge_ind <- as.factor(df_train$pledge_ind)
 
 write.csv(full_data, "datasets/cleaned_joined_data.csv ", row.names=F)
 
@@ -187,18 +203,15 @@ test <- full_data[-train_ind, ]
 write.csv(train, "datasets/full_data_train.csv ", row.names=F)
 write.csv(test, "datasets/full_data_test.csv ", row.names=F)
 
-#examining the full data
+#examining the full data (basic checks)
 hist(full_data$online_donation_count)
 hist(full_data$pledge_ind)
 hist(full_data$Nederland_ind)
 hist(full_data$World_ind)
 hist(joined_data$pledge_count)
 
-
-
 barplot(prop.table(table(full_data$online_donation_count)))
 barplot(prop.table(table(joined_data$pledge_count)))
 
 nrow(full_data)
-
 names(full_data)

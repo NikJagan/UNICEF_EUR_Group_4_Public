@@ -1,5 +1,7 @@
 library(ALEPlot)
 library(randomForest)
+library(ale)
+library(dplyr)
 
 #read the model 
 load("RandomForest.RData")
@@ -61,19 +63,19 @@ dev.off()
 #create ALE 2nd order plots for proximities
 #culture
 png("culture_interaction.png", width = 6, height = 10, units = 'in', res = 500)
-par(mfrow = c(3,3), mar=c(4, 4, 3, 1))
+par(mfrow = c(3,3), mar=c(4, 4, 3, 1), oma=c(3,3,3,1))
 ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Nederland_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
 ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Nederland_ind", "X.voormalige..Nederlandse.Antillen..Aruba"),K=20, NA.plot = F)
-ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Marokko_ind", "Marokko"),K=20, NA.plot = F)
-mtext("ALE effect plot for cultural proximities", side=3, line=2, cex=0.7, outer=TRUE, adj=0)
-mtext("% of this nationality in the zip code", side=2, line=2, cex=0.7, outer=TRUE, padj=1)
-mtext("Region where an event happened (1=happened)", side=1, line=2, cex=0.7, outer=TRUE, padj=1)
 ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Turkije_ind", "Turkije"),K=20, NA.plot = F)
+mtext("ALE effect plot for cultural proximities", side=3, line=1.5, cex=0.7, outer=TRUE)
+mtext("% of this nationality in the zip code", side=2, line=1.5, cex=0.7, outer=TRUE)
+mtext("Region where an event happened (1=happened)", side=1, line=1.5, cex=0.7, outer=TRUE)
 ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Indonesie_ind", "Indonesië"),K=20, NA.plot = F)
 ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Suriname_ind", "Suriname"),K=20, NA.plot = F)
 ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Afrika_ind", "Afrika"),K=20, NA.plot = F)
 ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Amerika_ind", "Amerika"),K=20, NA.plot = F)
 ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Asie_ind", "Azië"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Oceanie_ind", "Oceanië"),K=20, NA.plot = F)
 dev.off()
 
 #location
@@ -88,3 +90,29 @@ mtext("ALE main effect of external events on online donations", side=3, line=1.5
 ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("World_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
 mtext("Event happened elsewhere", side=1, line=2, cex=0.7, outer=TRUE, adj=1)
 dev.off()
+
+#pledge interaction
+png("pledge_interaction.png", width = 6, height = 10, units = 'in', res = 500)
+par(mfrow = c(3,3), mar=c(4, 4, 3, 1), oma=c(3,3,3,1))
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("pledge_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("pledge_ind", "X.voormalige..Nederlandse.Antillen..Aruba"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("pledge_ind", "Turkije"),K=20, NA.plot = F)
+mtext("ALE effect plot for pledge x demographics interactions", side=3, line=1.5, cex=0.7, outer=TRUE)
+mtext("% of this nationality in the zip code", side=2, line=1.5, cex=0.7, outer=TRUE)
+mtext("Presence of pledge (1=happened)", side=1, line=1.5, cex=0.7, outer=TRUE)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("pledge_ind", "Indonesië"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("pledge_ind", "Suriname"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("pledge_ind", "Afrika"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("pledge_ind", "Amerika"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("pledge_ind", "Azië"),K=20, NA.plot = F)
+ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("pledge_ind", "Oceanië"),K=20, NA.plot = F)
+dev.off()
+
+
+#ALE package
+df_train_ale <- as.data.frame(df_train)
+ale_model <- ale_ixn(df_test, rf_model, y_col="online_donation_count")
+
+help(ale)
+help(predict)
+str(df_train)
