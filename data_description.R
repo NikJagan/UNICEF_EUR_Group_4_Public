@@ -211,4 +211,5 @@ head(events_that_happened, 16)
 
 #T-test to test for cannibalization of pledges
 t.test(online_donation_count~pledge_ind, full_data)
+t.test(total_donations_count~pledge_ind, full_data)
 
