@@ -5,6 +5,7 @@ library(dplyr)
 
 #read the model 
 load("RandomForest.RData")
+rf_model <- tuned_model
 
 #define the prediction func
 yhat <- function(X.model, newdata) as.numeric(predict(X.model, newdata))
@@ -31,11 +32,11 @@ Surinam <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="Suriname",K=20, NA.plot
 turkey <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="Turkije",K=20, NA.plot = F)
 
 png("demographics.png", width = 10, height = 8, units = 'in', res = 300)
-par(mfrow = c(3,3), mar=c(4, 4, 3, 1))
+par(mfrow = c(3,3), mar=c(4, 4, 3, 1), oma=c(2,2,3,2))
 plot(ned$x.values, ned$f.values, type="l", xlab="% of Dutch nationals", ylab="Effect on DV")
 plot(afrika$x.values, afrika$f.values, type="l", xlab="% of African nationals", ylab="Effect on DV")
 plot(asia$x.values, asia$f.values, type="l", xlab="% of Asian nationals", ylab="Effect on DV")
-mtext("ALE main effect of nationality on online donations", side=3, line=1.5)
+mtext("ALE main effect of nationality on online donations", side=3, outer=TRUE)
 plot(europe$x.values, europe$f.values, type="l", xlab="% of European nationals", ylab="Effect on DV")
 plot(oceania$x.values, oceania$f.values, type="l", xlab="% of Oceania nationals", ylab="Effect on DV")
 plot(Indonesia$x.values, Indonesia$f.values, type="l", xlab="% of Indonesian nationals", ylab="Effect on DV")
@@ -51,10 +52,10 @@ world_ev <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="World_ind",K=20, NA.pl
 
 png("events.png", width = 10, height = 8, units = 'in', res = 300)
 par(mfrow = c(1,3), mar=c(4, 4, 3, 1))
-plot(ned_ev$x.values, ned_ev$f.values, type="l", xlab="A disaster happened in the Netherlands", ylab="Effect on DV")
-plot(eu_ev$x.values, eu_ev$f.values, type="l", xlab="A disaster happened in EU", ylab="Effect on DV")
+plot(ned_ev$x.values, ned_ev$f.values, type="l",ylim=c(0,0.32), xlab="A disaster happened in the Netherlands", ylab="Effect on DV")
+plot(eu_ev$x.values, eu_ev$f.values, type="l", ylim=c(0,0.32), xlab="A disaster happened in EU", ylab="Effect on DV")
 mtext("ALE main effect of external events on online donations", side=3, line=1.5)
-plot(world_ev$x.values, world_ev$f.values, type="l", xlab="A disaster happened elsewehere", ylab="Effect on DV")
+plot(world_ev$x.values, world_ev$f.values, type="l", ylim=c(0,0.32), xlab="A disaster happened elsewehere", ylab="Effect on DV")
 dev.off()
 
 #create ALE 2nd order plots for proximities
