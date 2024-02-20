@@ -138,5 +138,5 @@ r2_value <- postResample(pred = predictions, obs = actual_values)[["Rsquared"]]
 # Print the R-squared value
 print(r2_value)
 
-save.image(file = "RandomForest4.RData") # Saving the entire workspace
+save.image(file = "RandomForest.RData") # Saving the entire workspace
 
