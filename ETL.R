@@ -202,16 +202,3 @@ test <- full_data[-train_ind, ]
 
 write.csv(train, "datasets/full_data_train.csv ", row.names=F)
 write.csv(test, "datasets/full_data_test.csv ", row.names=F)
-
-#examining the full data (basic checks)
-hist(full_data$online_donation_count)
-hist(full_data$pledge_ind)
-hist(full_data$Nederland_ind)
-hist(full_data$World_ind)
-hist(joined_data$pledge_count)
-
-barplot(prop.table(table(full_data$online_donation_count)))
-barplot(prop.table(table(joined_data$pledge_count)))
-
-nrow(full_data)
-names(full_data)

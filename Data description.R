@@ -134,8 +134,6 @@ p7 <- ggplot(data=events_effect, aes(x=event_ind, y=donation_count)) +
 p7
 ggsave("donation count after event.png")
 
-table(prop.table(events_effect))
-
 #different demographic groups count in 2022
 #Remove irrelevant Rows
 migration_data$Geslacht <- NULL
@@ -197,7 +195,6 @@ p<-ggplot(external_events, aes(x=slachtoffers)) +
 labs(x="Causalties count", y="") 
 p
 
-table(prop.table(external_events_cas))
 
 #discover which article corresponds to an observation
 #find the observation
