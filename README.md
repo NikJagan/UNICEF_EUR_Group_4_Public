@@ -22,13 +22,16 @@ The data files used are the following:
 
 2. _constants.py_ The file consists of all constants used for external_events script.
 
-3. _role.py_ This script defines the system message passed to chatGPT model. It is very important to define the prompt properly as this defines the success of the model. Poorly-defines prompt will lead to bad quality data. The best practices are listed [here](https://platform.openai.com/docs/guides/prompt-engineering/strategy-write-clear-instructions).
+3. _role.py_ This script defines the system message passed to chatGPT model. It is very important to define the prompt properly as this defines the success of the model. Poorly-defined prompt will lead to bad quality data. The best practices are listed [here](https://platform.openai.com/docs/guides/prompt-engineering/strategy-write-clear-instructions).
 
-4. _ETL.R_ This script ensures that all data cleaning and joins are performed. As output, it produces 1 dataset (cleaned_joined_data.csv) that can be used for ML. In principle, any ML model can then be applied to this dataset.
+4. _ETL.R_ This script ensures that all data cleaning and joins are performed. As output, it produces 1 dataset (cleaned_joined_data.csv) that can be used for ML. In principle, any ML model can then be applied to this dataset. On top of it, in order to be able to compare multiple models on exactly the same data, we have performed train/test split in this script. These datasets are also saved in datasets folder.
 
-5. _LR.R_ This script consists of the implementation, training, and evaluating the Linear Regression model.
+5. _Data description.R_ This script produces plots and summaries used to describe the obtained data and get more insights into the dataset used for ML.
 
-5. _RandomForest.R_ This script consists of the implementation, training, hyperparametertuning, evaluating of the Random Forest model.
+
+5. _Linear Regression.R_ This script consists of the implementation, training, and evaluating the Linear Regression model.
+
+5. _Random Forest.R_ This script consists of the implementation, training, hyperparametertuning, evaluating of the Random Forest model.
 
 5. _Posthoc analysis.R_ This script consists of Post-hoc analysis of the Random forest, namely ALE Plots and Shapley values.
 
@@ -39,7 +42,7 @@ In this section, we will provide advice on how to ensure continuity of this proj
 
 1. **External events**
 
-In order to continue collecting external events, one needs to access a particular news API. We were able to find [news API](https://newsapi.org/). This API provides data from the biggest newspapers across the world, including Dutch ones. On top of it, free version includes access to all the article until 30 days ago. This means that assuming monthly updates,this data could be acquired for free. However, paid version removes a lot of limits on amount of calls and allows to extract data from 5 years. The API allows usage of multiple keywords that would allow to filter out relevant data. Once the data source is changed, one can continue using the same pipeline as presented in external_events.py.
+In order to continue collecting external events, one needs to access a particular news API. We were able to find [news API](https://newsapi.org/). This API provides data from the biggest newspapers across the world, including Dutch ones. On top of it, free version includes access to all the articles up to 30 days ago. This means that assuming monthly updates,this data could be acquired for free. However, paid version removes a lot of limits on amount of calls and allows to extract data from 5 years. The API allows usage of multiple keywords that would allow to filter out relevant data. Once the data source is changed, one can continue using the same pipeline as presented in external_events.py.
 
 2. **ChatGPT**
 
@@ -57,7 +60,7 @@ The following cleaning steps are performed (ETL scripts):
 6. Aggregate the data on PC4, Year, Week level. 
 
 The output dataset of data is in datasets/cleaned_joined_data.csv
-We have additionally performed train and test split. These datasets are called full_data_train & full_data_test and are located in the folder datasets
+We have additionally performed train and test split. These datasets are called full_data_train & full_data_test and are located in the folder datasets.+
 
 
 ### A note on programming languages
