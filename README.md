@@ -1,6 +1,8 @@
 # Repository goal
 This repository consists of files that were used by Marleen Haubitz, Anastasia Khomenko, Nikilesh Jagan, and Inno Loor for analysis of Unicef data as a part of FEM11153: Seminar Case Studies in Data Science and Marketing Analytics. Master's program DSMA.
 
+This repository is part of the course, the main output of which was a final report. Therefore, this repository cannot be regarded separate from this report, where a lot of choices made for coding are explained from the literatire standpoint.
+
 # Effect of external events and social proximities on donations
 
 ## Description
@@ -26,9 +28,9 @@ The data files used are the following:
 
 5. _LR.R_ This script consists of the implementation, training, and evaluating the Linear Regression model.
 
-5. _CausalTree.R_ This script consists of the implementation, training, hyperparametertuning, evaluating and post-hoc analysis of the Causal Tree model.
+5. _RandomForest.R_ This script consists of the implementation, training, hyperparametertuning, evaluating of the Random Forest model.
 
-5. _CausalForests.R_ This script consists of the implementation, training, hyperparametertuning, evaluating and post-hoc analysis of the Causal Forest model. This model is explained in detail [here](https://towardsdatascience.com/causal-machine-learning-for-econometrics-causal-forests-5ab3aec825a7).
+5. _Posthoc analysis.R_ This script consists of Post-hoc analysis of the Random forest, namely ALE Plots and Shapley values.
 
 
 ## Recommendations on continuity
@@ -48,12 +50,14 @@ Undoubtedly, ChatGPT API plays an important role in this project. Therefore, it 
 The following cleaning steps are performed (ETL scripts):
 
 1. Remove whitespaces, irrelevant/erroneous entries, aggregate to PC4 (instead of PC6);
-2. Merge online donations with pledges using a full join. Online donations are a match with a pledge if they occured in the same Postcode and happened within 14 days after a pledge occured;
-3. Join external events. They are added if they occured 7 days before pledge date (if present). Or, otherwise, 7 days before online donation date.
-4. Join demographics based on Postcode and year.
-5. Aggregate the data on PC4, Year, Week level. 
+2. Remove Postcode where no pledge has occured in the past 5 years, since we believe that these are remote areas;
+3. Merge online donations with pledges using a full join. Online donations are a match with a pledge if they occured in the same Postcode and happened within 14 days after a pledge occured;
+4. Join external events. They are added if they occured 7 days before pledge date (if present). Or, otherwise, 7 days before online donation date.
+5. Join demographics based on Postcode and year.
+6. Aggregate the data on PC4, Year, Week level. 
 
 The output dataset of data is in datasets/cleaned_joined_data.csv
+We have additionally performed train and test split. These datasets are called full_data_train & full_data_test and are located in the folder datasets
 
 
 ### A note on programming languages
