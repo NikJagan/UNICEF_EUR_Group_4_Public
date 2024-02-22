@@ -29,12 +29,13 @@ The data files used are the following:
 5. _Data description.R_ This script produces plots and summaries used to describe the obtained data and get more insights into the dataset used for ML.
 
 
-5. _Linear Regression.R_ This script consists of the implementation, training, and evaluating the Linear Regression model.
+6. _Linear Regression.R_ This script consists of the implementation, training, and evaluating the Linear Regression model.
 
-5. _Random Forest.R_ This script consists of the implementation, training, hyperparametertuning, evaluating of the Random Forest model.
+7. _Random Forest.R_ This script consists of the implementation, training, hyperparametertuning, evaluating of the Random Forest model.
 
-5. _Posthoc analysis.R_ This script consists of Post-hoc analysis of the Random forest, namely ALE Plots and Shapley values.
+8. _Posthoc analysis.R_ This script consists of Post-hoc analysis of the Random forest, namely ALE Plots and Shapley values.
 
+9. _days_to_donate.R_ This script allows to build the histogram of amount of days that passed between pledge & online donations used in the methodology section of report.
 
 ## Recommendations on continuity
 
