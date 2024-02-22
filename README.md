@@ -35,7 +35,7 @@ The data files used are the following:
 
 8. _Posthoc analysis.R_ This script consists of Post-hoc analysis of the Random forest, namely ALE Plots and Shapley values.
 
-9. _days_to_donate.R_ This script allows to build the histogram of amount of days that passed between pledge & online donations used in the methodology section of report.
+9. _days to donate.R_ This script allows to build the histogram of amount of days that passed between pledge & online donations used in the methodology section of report.
 
 ## Recommendations on continuity
 
