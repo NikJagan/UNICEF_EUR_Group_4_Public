@@ -37,7 +37,7 @@ p2 <-ggplot(amount_of_donations, aes(Month_Yr, group=1)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
  g <- arrangeGrob(p1,p2, nrow=2) 
-ggsave("amount of donations per date.png", g)
+ggsave("fig3_amount_donations_time.png", g)
 
 #amount of external events over time
 external_events$Month_Yr <- format(as.Date(external_events$datum), "%Y-%m")
@@ -84,10 +84,10 @@ p4 <- ggplot(data=external_events_per_type, aes(x=reorder(type,count), y=count))
 labs(x="Count of event", y="Event type") 
 
  g <- arrangeGrob(p3,p4, ncol=2) 
-ggsave("external events description.png",g)
+ggsave("fig4_events_description.png",g)
 
  g <- arrangeGrob(p1,p2,p3, nrow=3) 
-ggsave("all line plots.png", g)
+ggsave("prezzo_events_donations_in_time.png", g)
 
 # count of events per region indicator
 external_events_transpose<-external_events %>% group_by(Month_Yr) %>%
@@ -106,7 +106,7 @@ p5 <- ggplot(external_events_transpose, aes(Month_Yr, group=1)) +
   scale_color_manual(values = colors)+
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
-ggsave("external events by region.png")
+ggsave("prezzo_events_by_region_line.png")
 
 # count of donations after a pledge/no pledge
 carryover_effect <- joined_data %>% mutate(pledge_ind = ifelse(pledge_count>0,  "Yes", "No")) %>%
@@ -119,7 +119,6 @@ p6 <- ggplot(data=carryover_effect, aes(x=pledge_ind, y=donation_count)) +
    theme(axis.text.y=element_blank(),
         axis.ticks=element_blank())
 p6
-ggsave("donation count after pledge.png")
 
 # count of donations after an event
 events_effect <- joined_data %>% mutate(event_ind = ifelse((Nederland_ind==1|Europe_ind==1|World_ind==1), "Yes", "No")) %>%
@@ -132,7 +131,6 @@ p7 <- ggplot(data=events_effect, aes(x=event_ind, y=donation_count)) +
    theme(axis.text.y=element_blank(),
         axis.ticks=element_blank())
 p7
-ggsave("donation count after event.png")
 
 #different demographic groups count in 2022
 #Remove irrelevant Rows
@@ -158,7 +156,7 @@ p8 <- ggplot(migration_data_total, aes(y=Population, x=reorder(Migratieachtergro
     theme_classic() + labs(x="Cultural background", y="Population") +
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), axis.text.y=element_blank(),)
 
-ggsave("population by migration background.png")
+ggsave("fig6_population_by_migration.png")
 
 #external events proximities
 external_events_per_region <- external_events %>% mutate(proximity=case_when(
@@ -182,8 +180,33 @@ external_events_per_region <- external_events %>% mutate(proximity=case_when(
 p4 <- ggplot(data=external_events_per_region, aes(x=reorder(proximity,count), y=count)) +
   geom_bar(stat="identity", fill="#1cabe2")+
   theme_classic() +coord_flip() +
-labs(x="Count of events", y="Event region") 
-ggsave("events by region.png")
+labs(x="Region", y="Count of events") 
+
+external_events_per_region <- external_events %>% filter(slachtoffers>0) %>%
+                                               mutate(proximity=case_when(
+                                                        Nederland_ind==1 ~ "Netherlands",
+                                                        Marokko_ind==1 ~ "Morocco",
+                                                        Turkije_ind==1 ~ "Turkey",
+                                                        Belgie_ind==1 ~ "Belgium",
+                                                        Duitsland_ind==1 ~ "Germany",
+                                                        Indonesie_ind==1 ~ "Indonesia",
+                                                        Polen_ind==1 ~ "Poland",
+                                                        Suriname_ind==1 ~ "Surinam",
+                                                        Oceanie_ind==1 ~ "Oceania",
+                                                        Afrika_ind==1 ~ "Africa",
+                                                        Amerika_ind==1 ~ "America",
+                                                        Asie_ind==1 ~ "Asia")) %>% 
+                                                        group_by(proximity)  %>% 
+                                                        filter(!is.na(proximity))  %>% 
+                                                        summarise(count=n()) %>% 
+                                                        arrange(-count)
+
+p5 <- ggplot(data=external_events_per_region, aes(x=reorder(proximity,count), y=count)) +
+  geom_bar(stat="identity", fill="#1cabe2")+
+  theme_classic() +coord_flip() +
+labs(x="Region", y="Count of events with injuries") 
+g <- arrangeGrob(p4,p5, nrow=1)
+ggsave("fig5_events_by_region.png",g)
 
 #histogram of injured people
 external_events$slachtoffers <- as.integer(external_events$slachtoffers)
@@ -209,4 +232,21 @@ head(events_that_happened, 16)
 #T-test to test for cannibalization of pledges
 t.test(online_donation_count~pledge_ind, full_data)
 t.test(total_donations_count~pledge_ind, full_data)
+
+#some stats
+joined_data %>% group_by(pledge_ind) %>% summarise(count=n())
+
+joined_data %>% mutate(event_happened=ifelse((Nederland_ind==1 |
+                                                        Marokko_ind==1 |
+                                                        Turkije_ind==1 |
+                                                        Belgie_ind==1 |
+                                                        Duitsland_ind==1 |
+                                                        Indonesie_ind==1 |
+                                                        Polen_ind==1 |
+                                                        Suriname_ind==1|
+                                                        Oceanie_ind==1 |
+                                                        Afrika_ind==1 |
+                                                        Amerika_ind==1|
+                                                        Asie_ind==1 ), 1,0)) %>% 
+group_by(event_happened) %>% summarise(count=n())
 
