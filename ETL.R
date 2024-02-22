@@ -86,7 +86,7 @@ joined_data$Week <- isoweek(joined_data$DATE_external_event_end)
 joined_data$Year <- year(joined_data$DATE_external_event_end)
 joined_data <- joined_data[Year>2018,]
 
-write.csv(joined_data, "datasets/not_aggregated_data_description.csv", row.names=F)
+#write.csv(joined_data, "datasets/not_aggregated_data_description.csv", row.names=F)
 
 
 #aggregate data on the correct level
@@ -110,6 +110,9 @@ joined_data <- joined_data %>% group_by(Postcode,Year, Week) %>%
                 ) %>% mutate(pledge_ind=ifelse(pledge_count>0, 1,0),
                             total_donations_count=pledge_count+online_donation_count)
 
+#examine amount of pledge counts
+joined_data %>% group_by(pledge_count) %>% summarise(count=n())
+joined_data %>%mutate(pledge_is10r0=ifelse((pledge_count==1 | pledge_count==0), 1, 0))%>% group_by(pledge_is10r0) %>% summarise(count=n())
 
 #MIGRATION DATA ####
 

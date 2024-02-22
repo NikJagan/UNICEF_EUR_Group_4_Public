@@ -2,7 +2,7 @@ def role ():
     role = """Je zal een artikel vaan een nederlandse krant krijgen over een catastrophe. 
                     Geef de volgende informatie terug in json formaat:
                     -------
-                    Dit zijn de velden een korte uitleg (data type):
+                    Dit zijn de velden en korte uitleg (data type):
                     Datum (str): Datum van deze gebeurtenis (formaat dd.mm.yyy). Soms is de datum niet duidelijk vermeld. Er staat bijvoorbeeld "3 dagen na de ramp", dan moet je 3 dagen van de publicatie datum aftrekken.
                     Land (str): Land van deze gebeurtenis
                     Type (str): Wat voor gebeurtenis was dat (explosie, schietincident, oorlog, tsunami, aardbeving, terrorisme, etc)
