@@ -14,26 +14,22 @@ external_events[external_events == ""] <- NA
 online_gifts[online_gifts == ""] <- NA
 pledges[pledges == ""] <- NA
 zipcodes[zipcodes == ""] <- NA
-migration_data[migration_data == ""] <- NA
-additional_info[additional_info == ""] <- NA
+
 
 online_gifts <- na.omit(online_gifts)
 pledges <- na.omit(pledges)
 zipcodes <- na.omit(zipcodes)
 external_events <- na.omit(external_events)
-migration_data <- na.omit(migration_data)
-additional_info <- na.omit(additional_info)
 
 # Trimming whitespace of PC6 and removing empty PC6
 online_gifts$PC6 <- trimws(online_gifts$PC6)
 pledges$PC6 <- trimws(pledges$PC6)
 zipcodes$PC6 <- trimws(zipcodes$PC6)
-additional_info$PC <- trimws(additional_info$PC)
+
 
 online_gifts <- online_gifts[online_gifts$PC6 != "", ]
 pledges <- pledges[pledges$PC6 != "", ]
 zipcodes <- zipcodes[zipcodes$PC6 != "", ]
-additional_info <- additional_info[additional_info$PC != "", ]
 
 external_events$datum <- dmy(external_events$datum)
 online_gifts$DATE <- dmy(format(mdy(online_gifts$DATE), "%d/%m/%Y"))
