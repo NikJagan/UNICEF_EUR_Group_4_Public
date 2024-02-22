@@ -3,12 +3,11 @@ library(data.table)
 library(tidyverse)
 library(lubridate)
 
-online_gifts <- read.csv("unicef_donations_data/ONLINE GIFTS.csv", sep = ";")
-pledges <- read.csv("unicef_donations_data/PLEDGES.csv", sep = ";")
-zipcodes <- read.csv("unicef_donations_data/ZIPCODES.csv", sep = ";")
-external_events <- read.csv("external_events_data.csv")
-migration_data <- read.csv("demographics_data/Population_migrationbackground_postcode.csv", sep = ";")
-additional_info <- read.csv2("extended-data/ADDITIONAL INFO 2VARS PC6.csv", sep = ";")
+online_gifts <- fread("datasets/ONLINE GIFTS.csv", sep = ";")
+pledges <- fread("datasets/PLEDGES.csv", sep = ";")
+zipcodes <- fread("datasets/ZIPCODES.csv", sep = ";")
+external_events <- fread("datasets/external_events_data.csv", , sep = ",")
+migration_data <- fread("datasets/Population_migrationbackground_postcode.csv", sep = ";")
 
 # Removing rows with empty entries
 external_events[external_events == ""] <- NA
