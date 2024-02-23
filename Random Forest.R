@@ -76,17 +76,19 @@ feature_importance <- feature_importance[, c("Feature", "Overall")]
 # Sorting based on importance
 feature_importance <- feature_importance[order(-feature_importance$Overall), ]
 
+#select top 10
+feature_importance <- feature_importance[1:10,]
+
 # UNICEF blue color (approximation)
 unicef_blue <- "#0099da"
 
 # Plotting feature importance with UNICEF color scheme
-ggplot(feature_importance, aes(x = reorder(Feature, Overall), y = Overall)) +
+p<- ggplot(feature_importance, aes(x = reorder(Feature, Overall), y = Overall)) +
   geom_bar(stat = "identity", fill = unicef_blue) +
   coord_flip() + # for horizontal bars
   xlab("Features") +
   ylab("Importance") +
   ggtitle("Feature Importance in Random Forest Model") +
-  theme_minimal() + 
   theme(
     plot.title = element_text(color = unicef_blue, size = 14, face = "bold"),
     axis.title = element_text(color = "black", size = 12),
@@ -94,8 +96,9 @@ ggplot(feature_importance, aes(x = reorder(Feature, Overall), y = Overall)) +
     panel.background = element_rect(fill = "white"),
     panel.grid.major = element_line(color = "grey80"),
     panel.grid.minor = element_line(color = "grey90")
-  )
+  )    + theme_classic()
 
+ggsave("fig7_feature_importance.png",p)
 
 # Remove the 'Postcode', 'Year', and 'Week' columns from the test data
 df_test <- full_data_test[, !(names(full_data_test) %in% c("Postcode", "Year", "Week", "total_donations_count"))]
