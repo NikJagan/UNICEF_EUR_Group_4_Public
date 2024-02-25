@@ -51,8 +51,8 @@ png("fig9_demographics_effect.png", width = 10, height = 8, units = 'in', res = 
 par(mfrow = c(3,3), mar=c(4, 4, 3, 1), oma=c(2,2,3,2))
 #nationalities close to Dutch
 plot(ned$x.values, ned$f.values, type="l", xlab="% of Dutch nationals", ylab="", ylim=c(-0.05, 0.2))
-plot(NedAnt$x.values, NedAnt$f.values, type="l", xlab="% of Antilles nationals", ylab="", ylim=c(-0.05, 0.2))
-plot(europe$x.values, europe$f.values, type="l", xlab="% of European nationals", ylab="", ylim=c(-0.05, 0.2))
+#plot(NedAnt$x.values, NedAnt$f.values, type="l", xlab="% of Antilles nationals", ylab="", ylim=c(-0.05, 0.2))
+#plot(europe$x.values, europe$f.values, type="l", xlab="% of European nationals", ylab="", ylim=c(-0.05, 0.2))
 mtext("ALE main effect of nationality on online donations", side=3, outer=TRUE)
 #nationalities with most external events
 plot(afrika$x.values, afrika$f.values, type="l", xlab="% of African nationals", ylab="", ylim=c(-0.05, 0.2))
@@ -62,6 +62,17 @@ plot(amerika$x.values, amerika$f.values, type="l", xlab="% of American nationals
 plot(Indonesia$x.values, Indonesia$f.values, type="l", xlab="% of Indonesian nationals", ylab="", ylim=c(-0.05, 0.2))
 plot(Surinam$x.values, Surinam$f.values, type="l", xlab="% of Surinam nationals", ylab="", ylim=c(-0.05, 0.2))
 plot(turkey$x.values, turkey$f.values, type="l", xlab="% of Turkey nationals", ylab="", ylim=c(-0.05, 0.2))
+mtext("Increase in online donations", side=2, line=0.6, cex=0.9, outer=TRUE)
+dev.off()
+
+#plot for presenting with most important demographics according to feature importance
+png("prezzo_demographics_effect.png", width = 10, height = 8, units = 'in', res = 300)
+par(mfrow = c(2,2), mar=c(4, 4, 3, 1), oma=c(2,2,3,2), bg=bg_col)
+plot(ned$x.values, ned$f.values, type="l", xlab="% of Dutch nationals", ylab="", ylim=c(-0.05, 0.2))
+mtext("ALE main effect of nationality on online donations", side=3, outer=TRUE)
+plot(afrika$x.values, afrika$f.values, type="l", xlab="% of African nationals", ylab="", ylim=c(-0.05, 0.2))
+plot(asia$x.values, asia$f.values, type="l", xlab="% of Asian nationals", ylab="", ylim=c(-0.05, 0.2))
+plot(amerika$x.values, amerika$f.values, type="l", xlab="% of American nationals", ylab="", ylim=c(-0.05, 0.2))
 mtext("Increase in online donations", side=2, line=0.6, cex=0.9, outer=TRUE)
 dev.off()
 
@@ -141,6 +152,23 @@ mtext("Place where event happened (1=event happened)", side=1, line=1.5, cex=0.9
 mtext("% of specific cultural background in zipcode", side=2, line=1.5, cex=0.9, outer=TRUE)
 dev.off()
 
+#plots for presentation
+png("prezzo_cultural_interaction.png", width = 6, height = 10, units = 'in', res = 500)
+par(mfrow = c(2,2), mar=c(4, 4, 3, 1), oma=c(3,3,3,1), bg=bg_col)
+image(as.integer(nl$x.values[[1]]), nl$x.values[[2]], nl$f.values,xlab = "the Netherlands", ylab = "Dutch", col=colour_palette, xaxt="n")
+axis(1, at=c(0,1),labels=c("0","1"))
+mtext("Darker colours indicate higher online donation count", side=3, adj=-1.5,line=1, cex=0.7)
+mtext("ALE effect plot for cultural proximities", side=3, line=1.5, cex=0.9, outer=TRUE)
+image(as.integer(africa$x.values[[1]]), africa$x.values[[2]], africa$f.values, xlab = "Africa", ylab = "African", col=colour_palette, xaxt="n")
+axis(1, at=c(0,1),labels=c("0","1"))
+image(as.integer(america$x.values[[1]]), america$x.values[[2]], america$f.values, xlab = "America", ylab = "American", col=colour_palette, xaxt="n")
+axis(1, at=c(0,1),labels=c("0","1"))
+image(as.integer(asia$x.values[[1]]), asia$x.values[[2]], asia$f.values, xlab = "Asia", ylab = "Asian", col=colour_palette, xaxt="n")
+axis(1, at=c(0,1),labels=c("0","1"))
+mtext("Place where event happened (1=event happened)", side=1, line=1.5, cex=0.9, outer=TRUE)
+mtext("% of specific cultural background in zipcode", side=2, line=1.5, cex=0.9, outer=TRUE)
+dev.off()
+
 #location
 nl_loc <- ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Nederland_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
 eu_loc <- ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Europe_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
@@ -186,6 +214,22 @@ image(as.integer(ind_dm$x.values[[1]]), ind_dm$x.values[[2]], ind_dm$f.values, x
 axis(1, at=c(0,1),labels=c("0","1"))
 image(as.integer(sur_dm$x.values[[1]]), sur_dm$x.values[[2]], sur_dm$f.values, xlab = "", ylab = "Surinamese", col=colour_palette, xaxt="n")
 axis(1, at=c(0,1),labels=c("0","1"))
+image(as.integer(afr_dm$x.values[[1]]), afr_dm$x.values[[2]], afr_dm$f.values, xlab = "", ylab = "African", col=colour_palette, xaxt="n")
+axis(1, at=c(0,1),labels=c("0","1"))
+image(as.integer(am_dm$x.values[[1]]), am_dm$x.values[[2]], am_dm$f.values, xlab = "", ylab = "American", col=colour_palette, xaxt="n")
+axis(1, at=c(0,1),labels=c("0","1"))
+image(as.integer(as_dm$x.values[[1]]), as_dm$x.values[[2]], as_dm$f.values, xlab = "", ylab = "Asian", col=colour_palette, xaxt="n")
+axis(1, at=c(0,1),labels=c("0","1"))
+mtext("Presence of pledge in zip code (1=pledge happened)", side=1, line=1.5, cex=0.9, outer=TRUE)
+mtext("% of specific cultural background in zipcode", side=2, line=1.5, cex=0.9, outer=TRUE)
+dev.off()
+
+#plots for presentation
+png("prezzo_pledge-demographic_interaction.png", width = 6, height = 10, units = 'in', res = 500)
+par(mfrow = c(2,2), mar=c(4, 4, 3, 1), oma=c(3,3,3,1), bg=bg_col)
+image(as.integer(nl_dm$x.values[[1]]), nl_dm$x.values[[2]], nl_dm$f.values,xlab = "", ylab = "Dutch", col=colour_palette, xaxt="n")
+axis(1, at=c(0,1),labels=c("0","1"))
+mtext("Darker colours indicate higher online donation count", side=3, adj=-1.5,line=1, cex=0.7)
 image(as.integer(afr_dm$x.values[[1]]), afr_dm$x.values[[2]], afr_dm$f.values, xlab = "", ylab = "African", col=colour_palette, xaxt="n")
 axis(1, at=c(0,1),labels=c("0","1"))
 image(as.integer(am_dm$x.values[[1]]), am_dm$x.values[[2]], am_dm$f.values, xlab = "", ylab = "American", col=colour_palette, xaxt="n")
