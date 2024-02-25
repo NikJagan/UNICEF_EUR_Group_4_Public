@@ -1,6 +1,5 @@
 library(ALEPlot)
 library(randomForest)
-library(ale)
 library(dplyr)
 library(gridExtra)
 library(ggthemes)
