@@ -2,6 +2,9 @@ library(ALEPlot)
 library(randomForest)
 library(ale)
 library(dplyr)
+library(gridExtra)
+library(ggthemes)
+library(grid)
 
 ############################
 #########ALE################
@@ -45,35 +48,55 @@ Surinam <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="Suriname",K=20, NA.plot
 turkey <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="Turkije",K=20, NA.plot = F)
 
 png("fig9_demographics_effect.png", width = 10, height = 8, units = 'in', res = 300)
-par(mfrow = c(3,3), mar=c(4, 4, 3, 1), oma=c(2,2,3,2), bg=bg_col)
+par(mfrow = c(3,3), mar=c(4, 4, 3, 1), oma=c(2,2,3,2))
 #nationalities close to Dutch
-plot(ned$x.values, ned$f.values, type="l", xlab="% of Dutch nationals", ylab="")
-plot(NedAnt$x.values, NedAnt$f.values, type="l", xlab="% of Antilles nationals", ylab="")
-plot(europe$x.values, europe$f.values, type="l", xlab="% of European nationals", ylab="")
+plot(ned$x.values, ned$f.values, type="l", xlab="% of Dutch nationals", ylab="", ylim=c(-0.05, 0.2))
+plot(NedAnt$x.values, NedAnt$f.values, type="l", xlab="% of Antilles nationals", ylab="", ylim=c(-0.05, 0.2))
+plot(europe$x.values, europe$f.values, type="l", xlab="% of European nationals", ylab="", ylim=c(-0.05, 0.2))
 mtext("ALE main effect of nationality on online donations", side=3, outer=TRUE)
 #nationalities with most external events
-plot(afrika$x.values, afrika$f.values, type="l", xlab="% of African nationals", ylab="")
-plot(asia$x.values, asia$f.values, type="l", xlab="% of Asian nationals", ylab="")
-plot(amerika$x.values, amerika$f.values, type="l", xlab="% of American nationals", ylab="")
+plot(afrika$x.values, afrika$f.values, type="l", xlab="% of African nationals", ylab="", ylim=c(-0.05, 0.2))
+plot(asia$x.values, asia$f.values, type="l", xlab="% of Asian nationals", ylab="", ylim=c(-0.05, 0.2))
+plot(amerika$x.values, amerika$f.values, type="l", xlab="% of American nationals", ylab="", ylim=c(-0.05, 0.2))
 #nationalities with history with Dutch
-plot(Indonesia$x.values, Indonesia$f.values, type="l", xlab="% of Indonesian nationals", ylab="")
-plot(Surinam$x.values, Surinam$f.values, type="l", xlab="% of Surinam nationals", ylab="")
-plot(turkey$x.values, turkey$f.values, type="l", xlab="% of Turkey nationals", ylab="")
-mtext("Increase in online donations", side=2, line=1.5, cex=0.9, outer=TRUE)
+plot(Indonesia$x.values, Indonesia$f.values, type="l", xlab="% of Indonesian nationals", ylab="", ylim=c(-0.05, 0.2))
+plot(Surinam$x.values, Surinam$f.values, type="l", xlab="% of Surinam nationals", ylab="", ylim=c(-0.05, 0.2))
+plot(turkey$x.values, turkey$f.values, type="l", xlab="% of Turkey nationals", ylab="", ylim=c(-0.05, 0.2))
+mtext("Increase in online donations", side=2, line=0.6, cex=0.9, outer=TRUE)
 dev.off()
 
-#external event
+#external events
 ned_ev <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="Nederland_ind",K=20, NA.plot = F)
+ned_ev <- data.frame(x=ned_ev$x.values, y=ned_ev$f.values)
 eu_ev <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="Europe_ind",K=20, NA.plot = F)
+eu_ev <- data.frame(x=eu_ev$x.values, y=eu_ev$f.values)
 world_ev <- ALEPlot(df_train, rf_model, pred.fun=yhat, J="World_ind",K=20, NA.plot = F)
+world_ev <- data.frame(x=world_ev$x.values, y=world_ev$f.values)
 
-png("fig10_events_effect.png", width = 10, height = 8, units = 'in', res = 300)
-par(mfrow = c(1,3), mar=c(4, 4, 3, 1))
-plot(ned_ev$x.values, ned_ev$f.values, type="l",ylim=c(0,0.32), xlab="A disaster happened in the Netherlands", ylab="Effect on DV")
-plot(eu_ev$x.values, eu_ev$f.values, type="l", ylim=c(0,0.32), xlab="A disaster happened in EU", ylab="Effect on DV")
-mtext("ALE main effect of external events on online donations", side=3, line=1.5)
-plot(world_ev$x.values, world_ev$f.values, type="l", ylim=c(0,0.32), xlab="A disaster happened elsewehere", ylab="Effect on DV")
-dev.off()
+p1<-ggplot(data=ned_ev, aes(x=x, y=y)) +
+  geom_bar(stat="identity", fill=unicef_blue) +
+  ylim(c(-0.2,0.25)) +
+  geom_text(aes(label=round(y, 2)), vjust=c(-0.1, 1),color="white", size=2.5)+ 
+  labs(x="Event in NL", y="", title="")+
+  theme_classic() #+ theme(panel.background = element_rect(fill=bg_col), rect = element_rect(fill = 'bg_col'), plot.background = element_rect(fill=bg_col))
+
+p2<-ggplot(data=eu_ev, aes(x=x, y=y)) +
+  geom_bar(stat="identity", fill=unicef_blue) +
+  ylim(c(-0.2,0.25)) +
+  geom_text(aes(label=round(y, 2)), vjust=c(-0.5, 1),color="white", size=2.5)+ 
+  labs(x="Event in EU", y="", title="")+
+  theme_classic() #+ theme(panel.background = element_rect(fill=bg_col),rect = element_rect(fill = 'bg_col'),  plot.background = element_rect(fill=bg_col))
+
+p3<-ggplot(data=world_ev, aes(x=x, y=y)) +
+  geom_bar(stat="identity", fill=unicef_blue) +
+  ylim(c(-0.2,0.25)) +
+  geom_text(aes(label=round(y, 2)), vjust=c(-0.5, 1),color="white", size=2.5)+ 
+  labs(x="Event elsewhere", y="", title="")+
+  theme_classic() #+ theme(panel.background = element_rect(fill=bg_col),rect = element_rect(fill = 'bg_col'), plot.background = element_rect(fill=bg_col))
+
+g<- grid.arrange(p1,p2,p3, nrow=1, top = "ALE main effect of external events on online donations", left="Increase in online donations")
+#g<- grid.draw(grobTree(rectGrob(gp=gpar(fill=bg_col, lwd=0)), g))
+ggsave("fig10_events_effect.png", g)
 
 #create ALE 2nd order plots for proximities
 #culture
@@ -118,16 +141,20 @@ mtext("% of specific cultural background in zipcode", side=2, line=1.5, cex=0.9,
 dev.off()
 
 #location
+nl_loc <- ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Nederland_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
+eu_loc <- ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Europe_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
+world_loc <- ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("World_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
+
 png("fig12_location_interaction.png", width = 6, height = 10, units = 'in', res = 500)
-par(mfrow = c(1,3), mar=c(3, 3, 3, 1), oma=c(4,4,3,1))
-ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Nederland_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
-mtext("Event happened in NL", side=1, line=2, cex=0.7, outer=TRUE, adj=0)
-mtext("% of Dutch nationals", side=2, line=2, cex=0.7, outer=TRUE)
-ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("Europe_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
-mtext("Event happened in EU (excl NL)", side=1, line=2, cex=0.7, outer=TRUE)
-mtext("ALE main effect of external events on online donations", side=3, line=1.5, outer=TRUE)
-ALEPlot(df_train, rf_model, pred.fun=yhat, J=c("World_ind", "Nederlandse.achtergrond"),K=20, NA.plot = F)
-mtext("Event happened elsewhere", side=1, line=2, cex=0.7, outer=TRUE, adj=1)
+par(mfrow = c(1,3), mar=c(4, 3, 3, 1), oma=c(2,4,3,1))
+image(as.integer(nl_loc$x.values[[1]]), nl_loc$x.values[[2]], nl_loc$f.values,xlab = "Event in NL", ylab = "", col=colour_palette, xaxt="n")
+axis(1, at=c(0,1),labels=c("0","1"))
+image(as.integer(eu_loc$x.values[[1]]), eu_loc$x.values[[2]], eu_loc$f.values, xlab = "Event in EU", ylab = "", col=colour_palette, xaxt="n")
+axis(1, at=c(0,1),labels=c("0","1"))
+image(as.integer(world_loc$x.values[[1]]), world_loc$x.values[[2]], world_loc$f.values, xlab = "Event elsewhere", ylab = "", col=colour_palette, xaxt="n")
+axis(1, at=c(0,1),labels=c("0","1"))
+mtext("ALE effect plot for location proximities", side=3, line=1.5, cex=0.9, outer=TRUE)
+mtext("% of Dutch population in zip code", side=2, line=1.5, cex=0.9, outer=TRUE)
 dev.off()
 
 #pledge interaction
