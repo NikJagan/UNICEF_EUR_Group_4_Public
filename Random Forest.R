@@ -80,7 +80,8 @@ feature_importance <- feature_importance[order(-feature_importance$Overall), ]
 feature_importance <- feature_importance[1:10,]
 
 # UNICEF blue color (approximation)
-unicef_blue <- "#0099da"
+unicef_blue <- "#00aeef"
+bg_col<-"#EFEEE7"
 
 # Plotting feature importance with UNICEF color scheme
 p<- ggplot(feature_importance, aes(x = reorder(Feature, Overall), y = Overall)) +
@@ -89,16 +90,37 @@ p<- ggplot(feature_importance, aes(x = reorder(Feature, Overall), y = Overall)) 
   xlab("Features") +
   ylab("Importance") +
   ggtitle("Feature Importance in Random Forest Model") +
+    scale_x_discrete(labels=c("American background","Asian background","Population","Event elsewhere","Event in EU",
+    "Event in NL","Event in Africa","Event in America", "Event in Asia","Pledge made"))+
   theme(
-    plot.title = element_text(color = unicef_blue, size = 14, face = "bold"),
+    plot.title = element_text(color = "black", size = 14, face = "bold"),
     axis.title = element_text(color = "black", size = 12),
     axis.text = element_text(color = "black"),
     panel.background = element_rect(fill = "white"),
     panel.grid.major = element_line(color = "grey80"),
     panel.grid.minor = element_line(color = "grey90")
-  )    + theme_classic()
+  )    + theme_minimal()
 
 ggsave("fig7_feature_importance.png",p)
+
+#select top 5 for plot for presentation
+feature_importance <- feature_importance[1:5,]
+p<- ggplot(feature_importance, aes(x = reorder(Feature, Overall), y = Overall)) +
+  geom_bar(stat = "identity", fill = unicef_blue) +
+  coord_flip() + # for horizontal bars
+  xlab("Features") +
+  ylab("Importance") +
+  ggtitle("Feature Importance in Random Forest Model") +
+  scale_x_discrete(labels=c("Event in NL","Event in Africa","Event in America","Event in Asia","Pledge made"))+
+  theme(
+    plot.title = element_text(color = "black", size = 14, face = "bold"),
+    axis.title = element_text(color = "black", size = 12),
+    axis.text = element_text(color = "black"),
+    panel.background = element_rect(fill=bg_col), 
+    plot.background = element_rect(fill=bg_col)
+  )    
+
+ggsave("prezzo_feature_importance.png",p)
 
 # Remove the 'Postcode', 'Year', and 'Week' columns from the test data
 df_test <- full_data_test[, !(names(full_data_test) %in% c("Postcode", "Year", "Week", "total_donations_count"))]

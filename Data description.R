@@ -18,6 +18,8 @@ sum(joined_data$pledge_ind)
 sum(joined_data$online_donation_count)
 names(joined_data)
 
+unicef_blue <- "#00aeef"
+
 # amount of donations over time
 not_aggregated_data$DATE_external_event_end <- ymd(not_aggregated_data$DATE_external_event_end)
 not_aggregated_data$Month_Yr <- format(as.Date(not_aggregated_data$DATE_external_event_end), "%Y-%m")
@@ -31,7 +33,7 @@ labs(x="Time (months)", y="Sum of pledges") +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 p2 <-ggplot(amount_of_donations, aes(Month_Yr, group=1)) +
-  geom_line(aes(y=online_donations),color="#1cabe2")+
+  geom_line(aes(y=online_donations),color=unicef_blue)+
   theme_classic() +
   labs(x="Time (months)", y="Sum of online donations") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
@@ -79,7 +81,7 @@ summarise(count=n()) %>% filter(type !="") %>%
 top_n(10) %>% arrange(-count)
 
 p4 <- ggplot(data=external_events_per_type, aes(x=reorder(type,count), y=count)) +
-  geom_bar(stat="identity", fill="#1cabe2")+
+  geom_bar(stat="identity", fill=unicef_blue)+
   theme_classic() +coord_flip() +
 labs(x="Count of event", y="Event type") 
 
@@ -113,7 +115,7 @@ carryover_effect <- joined_data %>% mutate(pledge_ind = ifelse(pledge_count>0,  
 group_by(pledge_ind) %>% summarise(donation_count=sum(online_donation_count))
 
 p6 <- ggplot(data=carryover_effect, aes(x=pledge_ind, y=donation_count)) +
-  geom_bar(stat="identity", fill="#1CABE2")+
+  geom_bar(stat="identity", fill=unicef_blue)+
   theme_classic() +
   labs(x="Pledge was made", y="Count of online donations") +
    theme(axis.text.y=element_blank(),
@@ -125,7 +127,7 @@ events_effect <- joined_data %>% mutate(event_ind = ifelse((Nederland_ind==1|Eur
 group_by(event_ind) %>% summarise(donation_count=sum(online_donation_count))
 
 p7 <- ggplot(data=events_effect, aes(x=event_ind, y=donation_count)) +
-  geom_bar(stat="identity", fill="#1CABE2")+
+  geom_bar(stat="identity", fill=unicef_blue)+
   theme_classic() +
   labs(x="Event happened", y="Donations made") +
    theme(axis.text.y=element_blank(),
@@ -178,7 +180,7 @@ external_events_per_region <- external_events %>% mutate(proximity=case_when(
                                                         arrange(-count)
 
 p4 <- ggplot(data=external_events_per_region, aes(x=reorder(proximity,count), y=count)) +
-  geom_bar(stat="identity", fill="#1cabe2")+
+  geom_bar(stat="identity", fill=unicef_blue)+
   theme_classic() +coord_flip() +
 labs(x="Region", y="Count of events") 
 
@@ -202,7 +204,7 @@ external_events_per_region <- external_events %>% filter(slachtoffers>0) %>%
                                                         arrange(-count)
 
 p5 <- ggplot(data=external_events_per_region, aes(x=reorder(proximity,count), y=count)) +
-  geom_bar(stat="identity", fill="#1cabe2")+
+  geom_bar(stat="identity", fill=unicef_blue)+
   theme_classic() +coord_flip() +
 labs(x="Region", y="Count of events with injuries") 
 g <- arrangeGrob(p4,p5, nrow=1)
@@ -213,7 +215,7 @@ external_events$slachtoffers <- as.integer(external_events$slachtoffers)
 external_events$slachtoffers [is.na(external_events$slachtoffers )] <- 0
 external_events_cas <- external_events %>% mutate(casualty_ind=ifelse(slachtoffers>0, 1,0)) %>% group_by(casualty_ind) %>% summarise(count=n())
 p<-ggplot(external_events, aes(x=slachtoffers)) + 
-  geom_histogram(fill="#1cabe2")+
+  geom_histogram(fill=unicef_blue)+
     theme_classic() + 
 labs(x="Causalties count", y="") 
 p
