@@ -1,16 +1,23 @@
-load("/Users/marleenhaubitz/Downloads/RandomForest3")
-predictions <- as.data.frame(predict(rf_model, df_test))
-colnames(predictions)[1] <- "online_donation_count"
+setwd("/Users/marleenhaubitz/Documents/Erasmus University/DSMA/UNICEF")
+load("RandomForest4.RData")
+
+`%notin%` <- negate(`%in%`)
+
+
+
 
 X <- df_train[, !(names(df_train)) %in% c("online_donation_count")]
 X_test <- df_test[-which(names(df_test) == "online_donation_count")] 
 response <- as.vector(df_train$online_donation_count)
 
+predictions <- as.data.frame(predict(tuned_model, X_test))
+colnames(predictions)[1] <- "pred_od_count"
+
 #Create a "Predictor" object that holds model and data
-predictor_all <- Predictor$new(rf_model, data = X, y = response)
+predictor_all <- Predictor$new(tuned_model, data = X, y = response)
 
 #Display and plot results
-shapley_all <- Shapley$new(predictor_all, x.interest = X_test[3260, ])
+shapley_all <- Shapley$new(predictor_all, x.interest = X_test[3, ])
 shapley_all
 shapley_all$plot()
 
@@ -25,4 +32,14 @@ ggplot(data = df_train, aes(x = online_donation_count)) +
 	labs(x = "Online Donations Train")
 
 
+df_test$row <-  1:nrow(df_test)
+ donation1 <- df_test[df_test$online_donation_count == 1, ]
+ donation0 <- df_test[df_test$online_donation_count == 0, ]
+ donation5 <- df_test[df_test$online_donation_count == 5, ]
+ 
 
+ 
+
+ 
+ 
+ 
