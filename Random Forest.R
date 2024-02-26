@@ -93,13 +93,13 @@ p<- ggplot(feature_importance, aes(x = reorder(Feature, Overall), y = Overall)) 
     scale_x_discrete(labels=c("American background","Asian background","Population","Event elsewhere","Event in EU",
     "Event in NL","Event in Africa","Event in America", "Event in Asia","Pledge made"))+
   theme(
-    plot.title = element_text(color = "black", size = 14, face = "bold"),
-    axis.title = element_text(color = "black", size = 12),
-    axis.text = element_text(color = "black"),
+    plot.title = element_text(color = "black", size = 22, face = "bold"),
+    axis.title = element_text(color = "black", size = 20),
+    axis.text = element_text(color = "black", size = 18),
     panel.background = element_rect(fill = "white"),
     panel.grid.major = element_line(color = "grey80"),
     panel.grid.minor = element_line(color = "grey90")
-  )    + theme_minimal()
+  )    
 
 ggsave("fig7_feature_importance.png",p)
 
@@ -113,9 +113,9 @@ p<- ggplot(feature_importance, aes(x = reorder(Feature, Overall), y = Overall)) 
   ggtitle("Feature Importance in Random Forest Model") +
   scale_x_discrete(labels=c("Event in NL","Event in Africa","Event in America","Event in Asia","Pledge made"))+
   theme(
-    plot.title = element_text(color = "black", size = 14, face = "bold"),
-    axis.title = element_text(color = "black", size = 12),
-    axis.text = element_text(color = "black"),
+    plot.title = element_text(color = "black", size = 20, face = "bold"),
+    axis.title = element_text(color = "black", size = 18),
+    axis.text = element_text(color = "black", size = 16),
     panel.background = element_rect(fill=bg_col), 
     plot.background = element_rect(fill=bg_col)
   )    
