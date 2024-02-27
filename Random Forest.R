@@ -5,10 +5,10 @@ library(Metrics)
 library(caret)
 
 # Load full_data_train.csv
-full_data_train <- read.csv("full_data_train.csv")
+full_data_train <- read.csv("datasets/full_data_train.csv")
 
 # Load full_data_test.csv
-full_data_test <- read.csv("full_data_test.csv")
+full_data_test <- read.csv("datasets/full_data_test.csv")
 
 df_train <- full_data_train[, !(names(full_data_train) %in% c("Year", "Week", "Postcode", "total_donations_count"))]
 
