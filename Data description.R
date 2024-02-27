@@ -225,7 +225,7 @@ p
 #find the observation
 migration$Postcode <- as.numeric(migration$Postcode)
 not_aggregated_data <- left_join(not_aggregated_data, migration, by = c("Year", "Postcode"))
-observation <- not_aggregated_data[which(Bevolking>=2.802 & Bevolking<=2.803),]
+observation <- not_aggregated_data[which(Bevolking>=3.3438 & Bevolking <= 3.343825 & Asie_ind==1),]
 observation <- observation[which(Postcode==5658),]
 events_that_happened <- observation %>% group_by(datum, land, type) %>% summarise(count=n())
 head(events_that_happened, 16)
