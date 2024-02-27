@@ -37,6 +37,8 @@ The data files used are the following:
 
 9. _days to donate.R_ This script allows to build the histogram of amount of days that passed between pledge & online donations used in the methodology section of report.
 
+10. _shapley.R_ Code used to produce shapley values for the presentation
+
 ## Recommendations on continuity
 
 In this section, we will provide advice on how to ensure continuity of this project.
