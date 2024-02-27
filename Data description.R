@@ -252,3 +252,13 @@ joined_data %>% mutate(event_happened=ifelse((Nederland_ind==1 |
                                                         Asie_ind==1 ), 1,0)) %>% 
 group_by(event_happened) %>% summarise(count=n())
 
+#PLOT THE DISTRIBUTION 
+ggplot(data = predictions, aes(x = online_donation_count)) + 
+	geom_histogram(binwidth = 0.5, fill = "skyblue", color = "black") +
+	labs(x = "Online Donations Predictions")
+
+ggplot(data = df_train, aes(x = online_donation_count)) + 
+	geom_histogram(binwidth = 0.5, fill = "skyblue", color = "black") +
+	labs(x = "Online Donations Train")
+
+
