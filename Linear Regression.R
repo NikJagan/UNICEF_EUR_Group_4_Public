@@ -109,8 +109,6 @@ dev.off()
 library(sjPlot)
 
 # marginal effect plots for the pledges * migration backgrounds interaction terms
-par(mfrow=c(5,2), mar=c(5,10,3,1), oma=c(2,2,2,2))
-mtext("Marginal effect plots for the pledges * migration backgrounds interaction terms", side=3, outer=TRUE)
 p1<-plot_model(lr_online, type = "pred", terms = c("pledge_ind", "Nederlandse.achtergrond"))
 p2<-plot_model(lr_online, type = "pred", terms = c("pledge_ind", "Afrika"))
 p3<-plot_model(lr_online, type = "pred", terms = c("pledge_ind", "Amerika"))
@@ -122,22 +120,28 @@ p8<-plot_model(lr_online, type = "pred", terms = c("pledge_ind", "X.voormalige..
 p9<-plot_model(lr_online, type = "pred", terms = c("pledge_ind", "Suriname"))
 p10<-plot_model(lr_online, type = "pred", terms = c("pledge_ind", "Turkije"))
 g<- grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, nrow=5, top = "Marginal effect plots for the pledges * migration backgrounds interaction terms")
+ggsave("fig15_marginal_effects_1.png", g)
+
 
 # marginal effect plots for the local proximity captured by the Dutch background * local vs European vs. rest of the world events
-plot_model(lr_online, type = "pred", terms = c("Nederland_ind", "Nederlandse.achtergrond"))
-plot_model(lr_online, type = "pred", terms = c("Europe_ind", "Nederlandse.achtergrond"))
-plot_model(lr_online, type = "pred", terms = c("World_ind", "Nederlandse.achtergrond"))
+p1<-plot_model(lr_online, type = "pred", terms = c("Nederland_ind", "Nederlandse.achtergrond"))
+p2<-plot_model(lr_online, type = "pred", terms = c("Europe_ind", "Nederlandse.achtergrond"))
+p3<-plot_model(lr_online, type = "pred", terms = c("World_ind", "Nederlandse.achtergrond"))
+g<- grid.arrange(p1,p2,p3, nrow=1, top = "Marginal effect plots for the location proximity")
+ggsave("fig15_marginal_effects_2.png", g)
 
 # marginal effect plots for the cultural proximity captured by the migration background * event location interaction
-plot_model(lr_online, type = "pred", terms = c("Marokko_ind", "Marokko"))
-plot_model(lr_online, type = "pred", terms = c("Turkije_ind", "Turkije"))
-plot_model(lr_online, type = "pred", terms = c("Indonesie_ind", "Indonesië"))
-plot_model(lr_online, type = "pred", terms = c("Suriname_ind", "Suriname"))
-plot_model(lr_online, type = "pred", terms = c("Oceanie_ind", "Oceanië"))
-plot_model(lr_online, type = "pred", terms = c("Afrika_ind", "Afrika"))
-plot_model(lr_online, type = "pred", terms = c("Amerika_ind", "Amerika"))
-plot_model(lr_online, type = "pred", terms = c("Asie_ind", "Azië"))
-plot_model(lr_online, type = "pred", terms = c("Nederland_ind", "X.voormalige..Nederlandse.Antillen..Aruba"))
+p1<-plot_model(lr_online, type = "pred", terms = c("Marokko_ind", "Marokko"))
+p2<-plot_model(lr_online, type = "pred", terms = c("Turkije_ind", "Turkije"))
+p3<-plot_model(lr_online, type = "pred", terms = c("Indonesie_ind", "Indonesië"))
+p4<-plot_model(lr_online, type = "pred", terms = c("Suriname_ind", "Suriname"))
+p5<-plot_model(lr_online, type = "pred", terms = c("Oceanie_ind", "Oceanië"))
+p6<-plot_model(lr_online, type = "pred", terms = c("Afrika_ind", "Afrika"))
+p7<-plot_model(lr_online, type = "pred", terms = c("Amerika_ind", "Amerika"))
+p8<-plot_model(lr_online, type = "pred", terms = c("Asie_ind", "Azië"))
+p9<-plot_model(lr_online, type = "pred", terms = c("Nederland_ind", "X.voormalige..Nederlandse.Antillen..Aruba"))
+g<- grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9 nrow=3, top = "Marginal effect plots for the cultural proximity")
+ggsave("fig15_marginal_effects_3.png", g)
 
 
 
