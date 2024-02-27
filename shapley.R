@@ -3,7 +3,7 @@ load("RandomForest4.RData")
 
 `%notin%` <- negate(`%in%`)
 
-
+library(iml)
 
 
 X <- df_train[, !(names(df_train)) %in% c("online_donation_count")]
@@ -19,7 +19,7 @@ predictor_all <- Predictor$new(tuned_model, data = X, y = response)
 #Display and plot results
 shapley_all <- Shapley$new(predictor_all, x.interest = X_test[3, ])
 shapley_all
-shapley_all$plot()
+shapley_all$plot()+scale_fill_manual(values=c(rep(unicef_blue, 26)))
 
 
 #PLOT THE DISTRIBUTION 
@@ -36,6 +36,9 @@ df_test$row <-  1:nrow(df_test)
  donation1 <- df_test[df_test$online_donation_count == 1, ]
  donation0 <- df_test[df_test$online_donation_count == 0, ]
  donation5 <- df_test[df_test$online_donation_count == 5, ]
+
+ df_test[47,]
+ head(donation5)
  
 
  
