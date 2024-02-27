@@ -1,5 +1,4 @@
-setwd("/Users/marleenhaubitz/Documents/Erasmus University/DSMA/UNICEF")
-load("RandomForest4.RData")
+load("RandomForest.RData")
 
 `%notin%` <- negate(`%in%`)
 
