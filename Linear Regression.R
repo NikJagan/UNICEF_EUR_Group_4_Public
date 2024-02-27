@@ -127,11 +127,10 @@ ggsave("fig15_marginal_effects_1.png", g)
 p1<-plot_model(lr_online, type = "pred", terms = c("Nederland_ind", "Nederlandse.achtergrond"))
 p2<-plot_model(lr_online, type = "pred", terms = c("Europe_ind", "Nederlandse.achtergrond"))
 p3<-plot_model(lr_online, type = "pred", terms = c("World_ind", "Nederlandse.achtergrond"))
-g<- grid.arrange(p1,p2,p3, nrow=1, top = "Marginal effect plots for the location proximity")
+g<- grid.arrange(p1,p2,p3, nrow=3, top = "Marginal effect plots for the location proximity")
 ggsave("fig15_marginal_effects_2.png", g)
 
 # marginal effect plots for the cultural proximity captured by the migration background * event location interaction
-p1<-plot_model(lr_online, type = "pred", terms = c("Marokko_ind", "Marokko"))
 p2<-plot_model(lr_online, type = "pred", terms = c("Turkije_ind", "Turkije"))
 p3<-plot_model(lr_online, type = "pred", terms = c("Indonesie_ind", "Indonesië"))
 p4<-plot_model(lr_online, type = "pred", terms = c("Suriname_ind", "Suriname"))
@@ -140,7 +139,7 @@ p6<-plot_model(lr_online, type = "pred", terms = c("Afrika_ind", "Afrika"))
 p7<-plot_model(lr_online, type = "pred", terms = c("Amerika_ind", "Amerika"))
 p8<-plot_model(lr_online, type = "pred", terms = c("Asie_ind", "Azië"))
 p9<-plot_model(lr_online, type = "pred", terms = c("Nederland_ind", "X.voormalige..Nederlandse.Antillen..Aruba"))
-g<- grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9 nrow=3, top = "Marginal effect plots for the cultural proximity")
+g<- grid.arrange(p2,p3,p4,p5,p6,p7,p8,p9, nrow=4, top = "Marginal effect plots for the cultural proximity")
 ggsave("fig15_marginal_effects_3.png", g)
 
 
