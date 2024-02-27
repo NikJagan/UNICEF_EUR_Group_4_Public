@@ -36,8 +36,6 @@ df_test$row <-  1:nrow(df_test)
  donation0 <- df_test[df_test$online_donation_count == 0, ]
  donation5 <- df_test[df_test$online_donation_count == 5, ]
 
- df_test[47,]
- head(donation5)
  
 
  
